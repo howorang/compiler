@@ -4,6 +4,13 @@
 %}
 
 %define parse.error verbose
+%token id
+%token num
+%token sign
+%token relop
+%token mulop
+%token assignop
+
 
 
 %%
