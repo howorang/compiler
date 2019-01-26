@@ -1,6 +1,7 @@
 %{
 #include <stdlib.h>
 #include "parser.tab.hpp"
+#include "SymbolTable.h"
 int tokenval;
 int lineno = 0;
 %}
@@ -20,15 +21,15 @@ OR "or"
 %%
 
 {RELOPS}        {
-                    yylval = yytext;
+                    yylval = (int)yytext[0];
                     return RELOP;
                 }
 {MULOPS}        {
-                    yylval = yytext;
+                    yylval = (int)yytext[0];
                     return MULOP;
                 }
 {SIGNS}         {
-                    yylval = yytext;
+                    yylval = (int)yytext[0];
                     return SIGN;
                 }
 {ASSIGN}        {
@@ -62,12 +63,13 @@ OR "or"
 
 {letter}({letter}|{digit})* {
                      int p;
-                     p = lookup (yytext);
+                     p = symbolTable.lookup(yytext);
                      if (p == 0)
                      {
-                        p = insert (yytext, ID);
+                        p = symbolTable.insert(yytext, ID);
                      }
                      yylval = p;
                     return symtable[p].token;
                 }
+.               {return (int) yytext[0];}
 %%

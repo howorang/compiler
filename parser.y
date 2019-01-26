@@ -1,7 +1,7 @@
 %{
 #include <stdlib.h>
 #include "lexer.cpp"
-
+#include "SymbolTable.h"
 int yyerror(const char *s);
 %}
 
