@@ -9,7 +9,7 @@ include(FindFLEX)
 
 
 bison_target(parser parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.tab.cpp)
-flex_target(lexer lexer.lex ${CMAKE_CURRENT_BINARY_DIR}/lexer.c)
+flex_target(lexer lexer.lex ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(lexer parser)
 
 add_executable(compiler main.cpp ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS})
