@@ -18,16 +18,7 @@ ASSIGN ":="
 OR "or"
 
 %%
-{letter}({letter} | {digit})* {
-                     int p;
-                     p = lookup (yytext);
-                     if (p == 0)
-                     {
-                        p = insert (yytext, ID);
-                     }
-                     yylval = p;
-                    return symtable[p].token;
-                }
+
 {RELOPS}        {
                     yylval = yytext;
                     return relop;
@@ -51,4 +42,36 @@ OR "or"
                 }
 {WHITE}         {}
 "program"       {return program;}
+"or"        {return or;}
+"not"       {return not;}
+"do"        {return do;}
+"if"        {return if;}
+"else"      {return else;}
+"then"      {return then;}
+"while"     {return while;}
+"var"       {return var;}
+".."        {return rangeop;}
+"array"     {return array;}
+"of"        {return of;}
+
+"integer"   {return integer;}
+"real"      {return real;}
+
+"procedure" {return procedure;}
+"function"  {return function;}
+
+"begin"     {return begin;}
+"end"       {return end;}
+"program"   {return program_token}
+
+{letter}({letter} | {digit})* {
+                     int p;
+                     p = lookup (yytext);
+                     if (p == 0)
+                     {
+                        p = insert (yytext, ID);
+                     }
+                     yylval = p;
+                    return symtable[p].token;
+                }
 %%
