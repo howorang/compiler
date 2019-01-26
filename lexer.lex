@@ -50,4 +50,5 @@ OR "or"
                     lineno++;
                 }
 {WHITE}         {}
+"program"       {return program;}
 %%

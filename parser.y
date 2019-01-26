@@ -10,156 +10,107 @@
 %token relop
 %token mulop
 %token assignop
+%token program
 
 
 
 %%
-program ->
-
+program:
 program id ( identifier_list ) ;
-
 declarations
-
 subprogram_declarations
-
 compound_statement
-
 .
 
-identifier_list ->
-
+identifier_list:
 id
-
 | identifier-list , id
 
-declarations ->
-
+declarations:
 declarations var identifier-list : type ;
 
 | Î
 
-type ->
-
+type:
 standard_type
-
 | array [ num . . num ] of standard_type
 
-standard_type ->
-
+standard_type:
 integer
-
 | real
 
-subprogram_declarations ->
-
+subprogram_declarations:
 subprogram_declarations subprogram_declaration ;
-
 | Î
 
-subprogram_declaration ->
-
+subprogram_declaration:
 subprogram_head declarations compound_statement
 
-subprogram_head ->
-
+subprogram_head:
 function id arguments : standard_type ;
-
 | procedure id arguments ;
 
-arguments ->
-
+arguments:
 ( parameter-list )
-
 | Î
 
-parameter_list ->
-
+parameter_list:
+//!
 identifier_list : type
 
 | parameter_list ; identifier_list : type
 
-compound_statement ->
-
+compound_statement:
 begin
-
 optional_statements
-
 end
 
-optional_statements ->
-
+optional_statements:
 statement_list
-
 | Î
 
-statement_list ->
-
+statement_list:
 statement
-
 | statement_list ; statement
 
-statement ->
-
+statement:
 variable assignop expression
-
 | procedure_statement
-
 | compound-statement
-
 | if expression then statement else statement
-
 | while expression do statement
 
-variable ->
-
+variable:
 id
-
 | id [ expression ]
 
-procedure_statement ->
-
+procedure_statement:
 id
-
 | id ( expression-list )
 
-expression_list ->
-
+expression_list:
 expression
-
 | expression_list , expression
 
-expression ->
-
+expression:
 simple_expression
-
 | simple_expression relop simple_expression
 
-simple_expression ->
-
+simple_expression:
 term
-
 | sign term
-
 | simple_expression sign term
-
 | simple_expression or term
 
-term ->
-
+term:
 factor
-
 | term mulop factor
 
-factor ->
-
+factor:
 variable
-
 | id ( expression_list )
-
 | num
-
 | ( expression )
-
 | not factor
 
 %%
