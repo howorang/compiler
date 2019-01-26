@@ -1,6 +1,6 @@
 %{
-#include "global.h"
 #include <stdlib.h>
+#include "parser.tab.hpp"
 int tokenval;
 int lineno = 0;
 %}
@@ -21,50 +21,46 @@ OR "or"
 
 {RELOPS}        {
                     yylval = yytext;
-                    return relop;
+                    return RELOP;
                 }
 {MULOPS}        {
                     yylval = yytext;
-                    return mulop;
+                    return MULOP;
                 }
 {SIGNS}         {
                     yylval = yytext;
-                    return sign;
+                    return SIGN;
                 }
 {ASSIGN}        {
-                    return assignop;
-                }
-{OR}            {
-                    return or;
+                    return ASSIGNOP;
                 }
 {NEWLINE}       {
                     lineno++;
                 }
 {WHITE}         {}
-"program"       {return program;}
-"or"        {return or;}
-"not"       {return not;}
-"do"        {return do;}
-"if"        {return if;}
-"else"      {return else;}
-"then"      {return then;}
-"while"     {return while;}
-"var"       {return var;}
-".."        {return rangeop;}
-"array"     {return array;}
-"of"        {return of;}
+"or"            {return OR;}
+"not"           {return NOT;}
+"do"            {return DO;}
+"if"            {return IF;}
+"else"          {return ELSE;}
+"then"          {return THEN;}
+"while"         {return WHILE;}
+"var"           {return VAR;}
+".."            {return RANGEOP;}
+"array"         {return ARRAY;}
+"of"            {return OF;}
 
-"integer"   {return integer;}
-"real"      {return real;}
+"integer"       {return INTEGER;}
+"real"          {return REAL;}
 
-"procedure" {return procedure;}
-"function"  {return function;}
+"procedure"     {return PROCEDURE;}
+"function"      {return FUNCTION;}
 
-"begin"     {return begin;}
-"end"       {return end;}
-"program"   {return program_token}
+"begin"         {return BEGIN_TOKEN;}
+"end"           {return END_TOKEN;}
+"program"       {return PROGRAM_TOKEN;}
 
-{letter}({letter} | {digit})* {
+{letter}({letter}|{digit})* {
                      int p;
                      p = lookup (yytext);
                      if (p == 0)
