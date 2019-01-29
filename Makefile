@@ -7,6 +7,6 @@ parser.o: parser.c lexer.cpp parser.hpp SymbolTable.h
 SymbolTable.o: SymbolTable.cpp global.h
 	g++ -c SymbolTable.cpp SymbolTable.h
 parser.hpp parser.c : parser.y
-	bison -o parser.cpp parser.y -d
+	bison -o parser.cpp parser.y -d -t
 lexer.cpp : lexer.lex
 	flex -d -o lexer.cpp lexer.lex

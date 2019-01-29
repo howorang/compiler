@@ -10,7 +10,7 @@
 #include <string.h>
 #include "parser.hpp"
 #include "SymbolTable.h"
-
+class SymbolTable;
 #define BSIZE 128
 #define EOS '\0'
 extern int lineno;

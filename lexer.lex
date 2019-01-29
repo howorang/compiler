@@ -73,12 +73,12 @@ OR "or"
                 }
 {digit}+.{digit}+ {
                     yylval.strVal = yytext;
-                    return REAL;
+                    return NUM;
 }
 
 {digit}+ {
                     yylval.strVal = yytext;
-                    return INTEGER;
+                    return NUM;
 }
 .               {return (int) yytext[0];}
 %%

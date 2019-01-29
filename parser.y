@@ -2,6 +2,7 @@
 #include "global.h"
 %}
 
+%debug
 %define parse.error verbose
 
 %union {
@@ -141,6 +142,7 @@ variable
 int yyerror(const char *s)
 {
 printf(s);
+printf("\n lineno: %d", lineno);
 printf("\n tokenval %d", yylval);
 printf("\n ychar: %c", yychar);
 }

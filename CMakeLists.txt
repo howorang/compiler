@@ -11,6 +11,7 @@ IF(BISON_FOUND)
             OUTPUT ${BisonOutput}
             COMMAND ${BISON_EXECUTABLE}
             -d
+            -t
             --output=${BisonOutput}
             ${CMAKE_SOURCE_DIR}/parser.y
             COMMENT "Generating parser.cpp"

@@ -7,10 +7,10 @@
 
 SymbolTable symbolTable = SymbolTable();
 
-int SymbolTable::insert(const std::string symbol, int tokenType) {
+int SymbolTable::insert(const std::string symbol, yytokentype tokenType) {
     SymbolEntry entry = {.tokenType = tokenType, .tokenVal = symbol};
     table.push_back(entry);
-    return table.size();
+    return table.size() - 1;
 }
 
 int SymbolTable::lookup(const std::string symbol) {
