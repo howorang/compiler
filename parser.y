@@ -1,6 +1,6 @@
 %{
 #include <stdlib.h>
-#include "lexer.cpp"
+#include "lexer.c"
 #include "SymbolTable.h"
 int yyerror(const char *s);
 %}
@@ -136,6 +136,6 @@ variable
 %%
 int yyerror(const char *s)
 {
-error(s);
+printf(s);
 printf("tokenval %d", yylval);
 }

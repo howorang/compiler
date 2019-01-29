@@ -11,13 +11,14 @@
 
 class SymbolTable {
 public:
-    int insert(const std::string symbol, int tokenType);
-    int lookup(const std::string symbol);
-
     struct SymbolEntry {
         int tokenType;
         std::string tokenVal;
     };
+    int insert(const std::string symbol, int tokenType);
+    int lookup(const std::string symbol);
+    SymbolEntry &operator[](int i);
+
 private:
     std::vector<SymbolEntry> table;
 };

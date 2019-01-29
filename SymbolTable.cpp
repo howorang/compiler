@@ -16,8 +16,13 @@ int SymbolTable::lookup(const std::string symbol) {
             return arg.tokenVal == symbol;
         });
     if (result == table.end()) {
-        return -1;
+        return 0;
     } else {
         return static_cast<int>(std::distance(table.begin(), result));
     }
 }
+
+SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
+    return table[i];
+}
+

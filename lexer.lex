@@ -1,6 +1,6 @@
 %{
 #include <stdlib.h>
-#include "parser.tab.hpp"
+#include "parser.h"
 #include "SymbolTable.h"
 int tokenval;
 int lineno = 0;
@@ -69,7 +69,7 @@ OR "or"
                         p = symbolTable.insert(yytext, ID);
                      }
                      yylval = p;
-                    return symtable[p].token;
+                    return symbolTable[p].tokenType;
                 }
 .               {return (int) yytext[0];}
 %%

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "parser.tab.h"
+#include "parser.h"
 
 int main() {
     yyparse();
