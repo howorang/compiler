@@ -1,7 +1,7 @@
 %{
 #include <stdlib.h>
-#include "parser.h"
-#include "SymbolTable.h"
+#include "global.h"
+
 int tokenval;
 int lineno = 0;
 %}

@@ -15,4 +15,4 @@ ADD_FLEX_BISON_DEPENDENCY(lexer parser)
 target_sources(parser PUBLIC SymbolTable.h SymbolTable.cpp)
 target_sources(lexer PUBLIC SymbolTable.h SymbolTable.cpp)
 
-add_executable(compiler main.cpp ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS} SymbolTable.cpp SymbolTable.h)
+add_executable(compiler main.cpp ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS} SymbolTable.cpp SymbolTable.h global.h)

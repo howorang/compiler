@@ -1,5 +1,5 @@
 #include <iostream>
-#include "parser.h"
+#include "global.h"
 
 int main() {
     yyparse();

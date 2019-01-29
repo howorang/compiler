@@ -23,6 +23,5 @@ private:
     std::vector<SymbolEntry> table;
 };
 
-SymbolTable symbolTable = SymbolTable();
 
 #endif //COMPILER_SYMBOLTABLE_H

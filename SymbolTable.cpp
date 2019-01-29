@@ -5,6 +5,8 @@
 #include <algorithm>
 #include "SymbolTable.h"
 
+SymbolTable symbolTable = SymbolTable();
+
 int SymbolTable::insert(const std::string symbol, int tokenType) {
     SymbolEntry entry = {.tokenType = tokenType, .tokenVal = symbol};
     table.push_back(entry);

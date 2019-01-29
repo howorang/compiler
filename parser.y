@@ -1,8 +1,5 @@
 %{
-#include <stdlib.h>
-#include "lexer.c"
-#include "SymbolTable.h"
-int yyerror(const char *s);
+#include "global.h"
 %}
 
 %define parse.error verbose
