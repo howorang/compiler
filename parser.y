@@ -3,6 +3,13 @@
 %}
 
 %define parse.error verbose
+
+%union {
+	int intVal;
+	char* strVal;
+	double doubleVal;
+}
+
 %token ID
 %token NUM
 %token SIGN
@@ -134,5 +141,6 @@ variable
 int yyerror(const char *s)
 {
 printf(s);
-printf("tokenval %d", yylval);
+printf("\n tokenval %d", yylval);
+printf("\n ychar: %c", yychar);
 }

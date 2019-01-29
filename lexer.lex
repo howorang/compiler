@@ -11,7 +11,7 @@ int lineno = 0;
 digit [0-9]
 letter [A-z]
 NEWLINE "\n"
-WHITE "\t"," "
+WHITE [ \t]+
 RELOPS "=","<>","<","<=",">=",">"
 MULOPS "*","/","div","mod","and"
 SIGNS "+","-"
@@ -21,15 +21,15 @@ OR "or"
 %%
 
 {RELOPS}        {
-                    yylval = (int)yytext[0];
+                    yylval.strVal = yytext;
                     return RELOP;
                 }
 {MULOPS}        {
-                    yylval = (int)yytext[0];
+                    yylval.strVal = yytext;
                     return MULOP;
                 }
 {SIGNS}         {
-                    yylval = (int)yytext[0];
+                    yylval.strVal = yytext;
                     return SIGN;
                 }
 {ASSIGN}        {
@@ -68,8 +68,17 @@ OR "or"
                      {
                         p = symbolTable.insert(yytext, ID);
                      }
-                     yylval = p;
+                     yylval.intVal = p;
                     return symbolTable[p].tokenType;
                 }
+{digit}+.{digit}+ {
+                    yylval.strVal = yytext;
+                    return REAL;
+}
+
+{digit}+ {
+                    yylval.strVal = yytext;
+                    return INTEGER;
+}
 .               {return (int) yytext[0];}
 %%

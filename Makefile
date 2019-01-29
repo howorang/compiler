@@ -9,4 +9,4 @@ SymbolTable.o: SymbolTable.cpp global.h
 parser.hpp parser.c : parser.y
 	bison -o parser.cpp parser.y -d
 lexer.cpp : lexer.lex
-	flex -o lexer.cpp lexer.lex
+	flex -d -o lexer.cpp lexer.lex

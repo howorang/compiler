@@ -17,7 +17,6 @@ extern int lineno;
 extern int yylex (void);
 extern FILE *yyin, *yyout;
 extern int yyparse (void);
-extern int yylval;
 extern SymbolTable symbolTable;
 extern int yyerror(const char*);
 #endif //COMPILER_GLOBAL_H
