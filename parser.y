@@ -39,7 +39,13 @@
 
 %%
 program:
-PROGRAM_TOKEN ID '(' identifier_list ')' ';'
+PROGRAM_TOKEN ID '(' identifier_list ')'
+ ';' {
+     	int programLabel = symbolTable.genLabel();
+     	symbolTable[$2].label = programLabel;
+     	emitter.simpleEmit(symbolTable[programLabel].tokenVal + ":\n");
+}
+
 declarations
 subprogram_declarations
 compound_statement

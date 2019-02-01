@@ -13,15 +13,18 @@
 class SymbolTable {
 public:
     struct SymbolEntry {
-        yytokentype tokenType;
+        int tokenType;
         std::string tokenVal;
+        std::string label;
     };
-    int insert(const std::string symbol, yytokentype tokenType);
+    int insert(const std::string symbol, int tokenType);
     int lookup(const std::string symbol);
     SymbolEntry &operator[](int i);
+    int genLabel();
 
 private:
     std::vector<SymbolEntry> table;
+    int lastLabel = -1;
 };
 
 

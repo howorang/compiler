@@ -21,5 +21,7 @@ enum RELOP {
     GTE
 };
 
+const int LABEL = 767;
+
 
 #endif //COMPILER_CONSTS_H

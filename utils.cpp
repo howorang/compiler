@@ -22,5 +22,4 @@ enum RELOP decodeRelOp(std::string relOpStr) {
     else if (relOpStr.compare(">") == 0) { return GT;}
     else if (relOpStr.compare(">=") == 0) { return GTE;}
     throw decode_exception();
-
 }

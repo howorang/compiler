@@ -19,7 +19,7 @@ IF(BISON_FOUND)
 ENDIF()
 
 FIND_PACKAGE(FLEX REQUIRED)
-SET(FlexOutput ${CMAKE_SOURCE_DIR}/lexer.cpp utils.cpp utils.h consts.h)
+SET(FlexOutput ${CMAKE_SOURCE_DIR}/lexer.cpp utils.cpp utils.h consts.h CompilerContext.cpp CompilerContext.h Emitter.cpp Emitter.h)
 IF(FLEX_FOUND)
     ADD_CUSTOM_COMMAND(
             OUTPUT ${FlexOutput}
@@ -31,4 +31,4 @@ IF(FLEX_FOUND)
     )
 ENDIF()
 
-add_executable(compiler main.cpp SymbolTable.cpp SymbolTable.h global.h ${BisonOutput} ${FlexOutput} utils.h utils.cpp)
+add_executable(compiler main.cpp SymbolTable.cpp SymbolTable.h global.h ${BisonOutput} ${FlexOutput} utils.h utils.cpp Emitter.h Emitter.cpp)
