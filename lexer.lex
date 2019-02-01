@@ -22,15 +22,15 @@ OR "or"
 %%
 
 {RELOPS}        {
-                    yylval.strVal = yytext;
+                    yylval = decodeRelOp(yytext);
                     return RELOP;
                 }
 {MULOPS}        {
-                    yylval.strVal = yytext;
+                    yylval = decodeMulOp(yytext);
                     return MULOP;
                 }
 {SIGNS}         {
-                    yylval.strVal = yytext;
+                    yylval = yytext[0];
                     return SIGN;
                 }
 {ASSIGN}        {
@@ -69,16 +69,16 @@ OR "or"
                      {
                         p = symbolTable.insert(yytext, ID);
                      }
-                    yylval.intVal = p;
+                    yylval = p;
                     return ID;
                 }
 {digit}+.{digit}+ {
-                    yylval.strVal = yytext;
+                    //yylval.strVal = yytext;
                     return NUM;
 }
 
 {digit}+ {
-                    yylval.strVal = yytext;
+                    yylval = atoi(yytext);
                     return NUM;
 }
 .               {return (int) yytext[0];}

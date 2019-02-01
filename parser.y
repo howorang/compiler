@@ -6,12 +6,6 @@
 %define parse.error verbose
 %locations
 
-%union {
-	int intVal;
-	char* strVal;
-	double doubleVal;
-}
-
 %token ID
 %token NUM
 %token SIGN

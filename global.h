@@ -10,6 +10,8 @@
 #include <string.h>
 #include "parser.hpp"
 #include "SymbolTable.h"
+#include "utils.h"
+#include "consts.h"
 class SymbolTable;
 #define BSIZE 128
 #define EOS '\0'
