@@ -19,12 +19,16 @@ public:
         std::string label;
         int varType;
         int place;
+        double realVal;
+        int intVal;
     };
     int insert(const std::string symbol, int tokenType);
     int lookup(const std::string symbol);
     SymbolEntry &operator[](int i);
     int genLabel();
     void initDeclarationList(std::vector<int> symbolIndexes, int type);
+    int insertLiteral(double value);
+    int insertLiteral(int value);
 
 private:
     std::vector<SymbolEntry> table;

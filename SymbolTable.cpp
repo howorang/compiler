@@ -39,3 +39,15 @@ void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) 
         lastFreeMemAddr = entry.place;
     }
 }
+
+int SymbolTable::insertLiteral(double value) {
+    SymbolEntry entry = {.realVal = value};
+    table.push_back(entry);
+    return static_cast<int>(table.size() - 1);
+}
+
+int SymbolTable::insertLiteral(int value) {
+    SymbolEntry entry = {.intVal = value};
+    table.push_back(entry);
+    return static_cast<int>(table.size() - 1);
+}

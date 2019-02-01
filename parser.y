@@ -115,7 +115,7 @@ variable ASSIGNOP expression
 | WHILE expression DO statement
 
 variable:
-ID
+ID {$$ = $1;}
 | ID '[' expression ']'
 
 procedure_statement:
@@ -127,13 +127,13 @@ expression
 | expression_list ',' expression
 
 expression:
-simple_expression
+simple_expression {}
 | simple_expression RELOP simple_expression
 
 simple_expression:
 term
 | SIGN term
-| simple_expression SIGN term
+| simple_expression SIGN term {}
 | simple_expression OR term
 
 term:

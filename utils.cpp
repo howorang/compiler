@@ -6,21 +6,21 @@
 
 
 enum MULOP decodeMulOp(std::string mulOpStr) {
-    if (mulOpStr.compare("*") == 0) { return MUL;}
-    else if (mulOpStr.compare("/") == 0) { return DIV;}
-    else if (mulOpStr.compare("div") == 0) { return DIV;}
-    else if (mulOpStr.compare("mod") == 0) { return MOD;}
-    else if (mulOpStr.compare("and") == 0) { return AND;}
+    if (mulOpStr == "*") { return MUL;}
+    else if (mulOpStr == "/") { return DIV;}
+    else if (mulOpStr == "div") { return DIV;}
+    else if (mulOpStr == "mod") { return MOD;}
+    else if (mulOpStr == "and") { return AND;}
     throw decode_exception();
 }
 
 enum RELOP decodeRelOp(std::string relOpStr) {
-    if (relOpStr.compare("=") == 0) { return EQ;}
-    else if (relOpStr.compare("<>") == 0) { return NEQ;}
-    else if (relOpStr.compare("<") == 0) { return LT;}
-    else if (relOpStr.compare("<=") == 0) { return LTE;}
-    else if (relOpStr.compare(">") == 0) { return GT;}
-    else if (relOpStr.compare(">=") == 0) { return GTE;}
+    if (relOpStr == "=") { return EQ;}
+    else if (relOpStr == "<>") { return NEQ;}
+    else if (relOpStr == "<") { return LT;}
+    else if (relOpStr == "<=") { return LTE;}
+    else if (relOpStr == ">") { return GT;}
+    else if (relOpStr == ">=") { return GTE;}
     throw decode_exception();
 }
 
