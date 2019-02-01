@@ -4,6 +4,7 @@
 
 %debug
 %define parse.error verbose
+%locations
 
 %union {
 	int intVal;
@@ -141,8 +142,5 @@ variable
 %%
 int yyerror(const char *s)
 {
-printf(s);
-printf("\n lineno: %d", lineno);
-printf("\n tokenval %d", yylval);
-printf("\n ychar: %c", yychar);
+ fprintf(stderr,"Error | Line: %d\n%s\n",yylineno,s);
 }

@@ -13,7 +13,7 @@
 class SymbolTable;
 #define BSIZE 128
 #define EOS '\0'
-extern int lineno;
+extern int yylineno;
 extern int yylex (void);
 extern FILE *yyin, *yyout;
 extern int yyparse (void);

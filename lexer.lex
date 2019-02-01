@@ -7,14 +7,15 @@ int lineno = 0;
 %}
 
 %option noyywrap
+%option yylineno
 
 digit [0-9]
 letter [A-z]
 NEWLINE "\n"
 WHITE [ \t]+
-RELOPS "=","<>","<","<=",">=",">"
-MULOPS "*","/","div","mod","and"
-SIGNS "+","-"
+RELOPS "="|"<>"|"<"|"<="|">="|">"
+MULOPS "*"|"/"|"div"|"mod"|"and"
+SIGNS "+"|"-"
 ASSIGN ":="
 OR "or"
 
@@ -68,8 +69,8 @@ OR "or"
                      {
                         p = symbolTable.insert(yytext, ID);
                      }
-                     yylval.intVal = p;
-                    return symbolTable[p].tokenType;
+                    yylval.intVal = p;
+                    return ID;
                 }
 {digit}+.{digit}+ {
                     yylval.strVal = yytext;
