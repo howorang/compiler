@@ -9,7 +9,7 @@ SymbolTable.o: SymbolTable.cpp SymbolTable.h global.h
 parser.hpp parser.c : parser.y
 	bison -o parser.cpp parser.y -d -t
 lexer.cpp : lexer.lex
-	flex -d -o lexer.cpp lexer.lex
+	flex -o lexer.cpp lexer.lex
 utils.o: utils.cpp utils.h
 	g++ -c utils.h utils.cpp
 Emitter.o : Emitter.h Emitter.cpp

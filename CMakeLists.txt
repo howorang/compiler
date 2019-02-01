@@ -19,13 +19,12 @@ IF(BISON_FOUND)
 ENDIF()
 
 FIND_PACKAGE(FLEX REQUIRED)
-SET(FlexOutput ${CMAKE_SOURCE_DIR}/lexer.cpp utils.cpp utils.h consts.h CompilerContext.cpp CompilerContext.h Emitter.cpp Emitter.h)
+SET(FlexOutput ${CMAKE_SOURCE_DIR}/lexer.cpp)
 IF(FLEX_FOUND)
     ADD_CUSTOM_COMMAND(
             OUTPUT ${FlexOutput}
             COMMAND ${FLEX_EXECUTABLE}
             --outfile=${FlexOutput}
-            -d
             ${CMAKE_SOURCE_DIR}/lexer.lex
             COMMENT "Generating scanner.cpp"
     )

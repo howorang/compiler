@@ -23,3 +23,17 @@ enum RELOP decodeRelOp(std::string relOpStr) {
     else if (relOpStr.compare(">=") == 0) { return GTE;}
     throw decode_exception();
 }
+
+class UnknownTypeException{};
+
+int sizeOfSymbol(int symbolType) {
+    switch(symbolType) {
+        case REAL:
+            return 8;
+        case INTEGER :
+            return 4;
+        default:
+            throw UnknownTypeException();
+    }
+}
+

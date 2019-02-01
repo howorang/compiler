@@ -12,8 +12,7 @@ class decode_exception {
 };
 
 enum MULOP decodeMulOp(std::string mulOpStr);
-
 enum RELOP decodeRelOp(std::string relOpStr);
-
+int sizeOfSymbol(int symbolType);
 
 #endif //COMPILER_UTILS_H

@@ -1,5 +1,8 @@
 %{
 #include "global.h"
+#include <vector>
+
+std::vector<int> declListHolder;
 %}
 
 %debug
@@ -49,23 +52,28 @@ PROGRAM_TOKEN ID '(' identifier_list ')'
 declarations
 subprogram_declarations
 compound_statement
-'.'
+'.' {
+	emitter.saveToFile("prog");
+}
 
 identifier_list:
-ID
-| identifier_list ',' ID
+ID {declListHolder.push_back($1);}
+| identifier_list ',' ID {declListHolder.push_back($3);}
 
 declarations:
-declarations VAR identifier_list ':' type ';'
+declarations VAR identifier_list ':' type ';' {
+	symbolTable.initDeclarationList(declListHolder, $5);
+	declListHolder.clear();
+}
 | %empty
 
 type:
-standard_type
+standard_type {$$ = $1;}
 | ARRAY '[' NUM RANGEOP NUM ']' OF standard_type
 
 standard_type:
-INTEGER
-| REAL
+INTEGER {$$ = INTEGER;}
+| REAL {$$ = REAL;}
 
 subprogram_declarations:
 subprogram_declarations subprogram_declaration ';'

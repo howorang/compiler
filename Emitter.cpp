@@ -9,3 +9,10 @@ Emitter emitter = Emitter();
 void Emitter::simpleEmit(std::string text) {
     out += text;
 }
+
+void Emitter::saveToFile(std::string fileName) {
+    std::ofstream outfile;
+    outfile.open(fileName);
+    outfile << out;
+    outfile.close();
+}

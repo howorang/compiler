@@ -2,7 +2,6 @@
 // Created by howorang on 26.01.19.
 //
 
-#include <algorithm>
 #include "SymbolTable.h"
 
 SymbolTable symbolTable = SymbolTable();
@@ -10,7 +9,7 @@ SymbolTable symbolTable = SymbolTable();
 int SymbolTable::insert(const std::string symbol, int tokenType) {
     SymbolEntry entry = {.tokenType = tokenType, .tokenVal = symbol};
     table.push_back(entry);
-    return table.size() - 1;
+    return static_cast<int>(table.size() - 1);
 }
 
 int SymbolTable::lookup(const std::string symbol) {
@@ -29,6 +28,14 @@ SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
 }
 
 int SymbolTable::genLabel() {
-    insert(std::to_string(++lastLabel), LABEL);
+    return insert(std::to_string(++lastLabel), LABEL);
 }
 
+void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) {
+    for (int symbolIndex : symbolIndexes) {
+        SymbolEntry& entry =  operator[](symbolIndex);
+        entry.varType = type;
+        entry.place = lastFreeMemAddr + sizeOfSymbol(type);
+        lastFreeMemAddr = entry.place;
+    }
+}

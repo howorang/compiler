@@ -7,10 +7,13 @@
 
 #include <string>
 #include "global.h"
+#include <fstream>
+#include <iostream>
 
 class Emitter {
 public:
     void simpleEmit(std::string text);
+    void saveToFile(std::string fileName);
 private:
     std::string out;
 
