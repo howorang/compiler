@@ -21,7 +21,9 @@ enum OP {
     INTOREAL,
     REALTOINT,
     MOV,
-    WRITE
+    WRITE,
+    LEAVE,
+    RETURN
 };
 
 const int LABEL = 767;

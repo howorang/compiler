@@ -47,6 +47,11 @@ void Emitter::genCode(OP operation, int arg1index) {
     out += "\n";
 }
 
+void Emitter::genCode(OP operation) {
+    std::string opCode = getOpCode(operation, NULL);
+    out += opCode;
+    out += "\n";
+}
 
 int Emitter::promoteIfNeeded(int arg1Index, int arg2Index) {
     SymbolTable::SymbolEntry &arg1 = symbolTable[arg1Index];
@@ -134,6 +139,14 @@ std::string Emitter::getOpCode(OP op, int type) {
         case WRITE:
             prefix = "write";
             break;
+        case LEAVE:
+            prefix = "leave";
+            break;
+        case RETURN:
+            prefix = "return";
+            break;
+        default:
+            throw "Unknown operation";
     }
     switch (type) {
         case INTEGER:
@@ -141,6 +154,8 @@ std::string Emitter::getOpCode(OP op, int type) {
             break;
         case REAL:
             postfix = ".r";
+            break;
+        default:
             break;
     }
     return prefix + postfix;

@@ -27,10 +27,6 @@ SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
     return table[i];
 }
 
-int SymbolTable::genLabel() {
-    return insert("lab" + std::to_string(++lastLabel), LABEL);
-}
-
 void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) {
     for (int symbolIndex : symbolIndexes) {
         SymbolEntry &entry = operator[](symbolIndex);
@@ -56,6 +52,8 @@ int SymbolTable::insertTempVar(int type) {
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
+
+
 
 int SymbolTable::getPlace(int type) {
     int toReturn = lastFreeMemAddr;

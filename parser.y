@@ -44,15 +44,16 @@ std::vector<int> declListHolder;
 program:
 PROGRAM_TOKEN ID '(' identifier_list ')'
  ';' {
- 	declListHolder.clear();
-     	int programLabel = symbolTable.genLabel();
-     	symbolTable[$2].label = programLabel;
-     	emitter.simpleEmit("jump.i  #" + symbolTable[programLabel].tokenVal);
-     	emitter.simpleEmit(symbolTable[programLabel].tokenVal + ":");
+   	emitter.simpleEmit("jump.i  #lab0");
 }
 
 declarations
-subprogram_declarations
+subprogram_declarations {
+	//declListHolder.clear();
+     	//int programLabel = symbolTable.genLabel();
+     	//symbolTable[$2].label = programLabel;
+     	emitter.simpleEmit("lab0:");
+}
 compound_statement
 '.' {
 	emitter.simpleEmit("exit");
@@ -79,7 +80,10 @@ INTEGER {$$ = INTEGER;}
 | REAL {$$ = REAL;}
 
 subprogram_declarations:
-subprogram_declarations subprogram_declaration ';'
+subprogram_declarations subprogram_declaration ';' {
+	emitter.genCode(LEAVE);
+	emitter.genCode(RETURN);
+}
 | %empty
 
 subprogram_declaration:
@@ -87,7 +91,12 @@ subprogram_head declarations compound_statement
 
 subprogram_head:
 FUNCTION ID arguments ':' standard_type ';'
-| PROCEDURE ID arguments ';'
+| PROCEDURE ID arguments ';' {
+	symbolTable[$2].isSubProgram = true;
+	symbolTable[$2].label = symbolTable[$2].tokenVal;
+	emitter.simpleEmit(symbolTable[$2].label + ":");
+	emitter.simpleEmit("enter #0");
+}
 
 arguments:
 '(' parameter_list ')'

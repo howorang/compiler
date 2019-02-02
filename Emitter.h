@@ -21,6 +21,7 @@ public:
     void genCode(OP operation, int arg1, int arg2, int resAddr); // arg1 and arg2 should be symbolTable indexes
     void genCode(OP operation, int arg1, int arg2); // arg1 and arg2 should be symbolTable indexes
     void genCode(OP operation, int arg1);
+    void genCode(OP operation);
     int determineOpType(int arg1, int arg2);
 
 private:
