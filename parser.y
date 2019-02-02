@@ -2,7 +2,8 @@
 #include "global.h"
 #include <vector>
 
-std::vector<int> declListHolder;
+std::vector<int> idListHolder;
+std::vector<std::pair<int, std::vector<int>>> paramListHolder;
 %}
 
 %debug
@@ -44,6 +45,7 @@ std::vector<int> declListHolder;
 program:
 PROGRAM_TOKEN ID '(' identifier_list ')'
  ';' {
+ 	idListHolder.clear();
    	emitter.simpleEmit("jump.i  #lab0");
 }
 
@@ -61,13 +63,13 @@ compound_statement
 }
 
 identifier_list:
-ID {declListHolder.push_back($1);}
-| identifier_list ',' ID {declListHolder.push_back($3);}
+ID {idListHolder.push_back($1);}
+| identifier_list ',' ID {idListHolder.push_back($3);}
 
 declarations:
 declarations VAR identifier_list ':' type ';' {
-	symbolTable.initDeclarationList(declListHolder, $5);
-	declListHolder.clear();
+	symbolTable.initDeclarationList(idListHolder, $5);
+	idListHolder.clear();
 }
 | %empty
 
@@ -90,7 +92,13 @@ subprogram_declaration:
 subprogram_head declarations compound_statement
 
 subprogram_head:
-FUNCTION ID arguments ':' standard_type ';'
+FUNCTION ID arguments ':' standard_type ';' {
+	symbolTable[$2].isSubProgram = true;
+	symbolTable[$2].label = symbolTable[$2].tokenVal;
+	symbolTable[$2].varType = $5;
+	emitter.simpleEmit(symbolTable[$2].label + ":");
+	emitter.simpleEmit("enter #0");
+}
 | PROCEDURE ID arguments ';' {
 	symbolTable[$2].isSubProgram = true;
 	symbolTable[$2].label = symbolTable[$2].tokenVal;
@@ -99,12 +107,24 @@ FUNCTION ID arguments ':' standard_type ';'
 }
 
 arguments:
-'(' parameter_list ')'
+'(' parameter_list ')' {
+
+}
 | %empty
 
 parameter_list:
-identifier_list ':' type
-| parameter_list ';' identifier_list ':' type
+identifier_list ':' type {
+	std::vector<int> ids;
+	ids = idListHolder;
+	idListHolder.clear();
+	paramListHolder.push_back(std::make_pair($3, ids));
+}
+| parameter_list ';' identifier_list ':' type {
+	std::vector<int> ids;
+        ids = idListHolder;
+        idListHolder.clear();
+        paramListHolder.push_back(std::make_pair($3, ids));
+}
 
 compound_statement:
 BEGIN_TOKEN
