@@ -52,7 +52,7 @@ int SymbolTable::insertLiteral(int value) {
 }
 
 int SymbolTable::insertTempVar(int type) {
-    SymbolEntry entry = {.varType = INTEGER, .place = getPlace(type)};
+    SymbolEntry entry = {.varType = type, .place = getPlace(type)};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }

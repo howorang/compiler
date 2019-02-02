@@ -18,8 +18,10 @@ void Emitter::saveToFile(std::string fileName) {
 }
 
 void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrIndex) {
-    arg1index = promoteIfNeeded(arg1index, arg2index);
-    arg2index = promoteIfNeeded(arg2index, arg1index);
+    if (operation != INTOREAL && operation != REALTOINT) {
+        arg1index = promoteIfNeeded(arg1index, arg2index);
+        arg2index = promoteIfNeeded(arg2index, arg1index);
+    }
     SymbolTable::SymbolEntry &result = symbolTable[resAddrIndex];
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
     out += opCode + ", " + std::to_string(symbolTable[arg1index].place) + ", " +
@@ -29,8 +31,10 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrInd
 }
 
 void Emitter::genCode(OP operation, int arg1index, int arg2index) {
-    arg1index = promoteIfNeeded(arg1index, arg2index);
-    arg2index = promoteIfNeeded(arg2index, arg1index);
+    if (operation != INTOREAL && operation != REALTOINT) {
+        arg1index = promoteIfNeeded(arg1index, arg2index);
+        arg2index = promoteIfNeeded(arg2index, arg1index);
+    }
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
     out += opCode + ", " + std::to_string(symbolTable[arg1index].place) + ", " +
            std::to_string(symbolTable[arg2index].place);

@@ -147,7 +147,11 @@ term {$$ = $1;}
 
 term:
 factor {$$ = $1;}
-| term MULOP factor
+| term MULOP factor {
+	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, $3));
+	emitter.genCode((OP)$2, $1, $3, tempVarIndex);
+	$$=tempVarIndex;
+}
 
 factor:
 variable {$$ = $1;}
