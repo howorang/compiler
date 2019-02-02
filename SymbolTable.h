@@ -29,11 +29,13 @@ public:
     void initDeclarationList(std::vector<int> symbolIndexes, int type);
     int insertLiteral(double value);
     int insertLiteral(int value);
+    int insertTempVar(int type);
 
 private:
     std::vector<SymbolEntry> table;
     int lastLabel = -1;
     int lastFreeMemAddr = 0;
+    int getPlace(int type);
 };
 
 

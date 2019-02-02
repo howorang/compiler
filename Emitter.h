@@ -10,12 +10,17 @@
 #include <fstream>
 #include <iostream>
 
+class SymbolTable;
+
 class Emitter {
 public:
     void simpleEmit(std::string text);
     void saveToFile(std::string fileName);
+    void genCode(OP operation, int arg1, int arg2, int resAddr); // arg1 and arg2 should be symbolTable indexes
+    int determineOpType(int arg1, int arg2);
+
 private:
     std::string out;
-
+    std::string getOpCode(OP op, int type);
 };
 #endif //COMPILER_EMITTER_H

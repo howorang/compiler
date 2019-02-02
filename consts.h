@@ -5,21 +5,21 @@
 #ifndef COMPILER_CONSTS_H
 #define COMPILER_CONSTS_H
 
-enum MULOP {
+enum OP {
     MUL,
     DIV,
     MOD,
-    AND
-};
-
-enum RELOP {
+    AND,
     EQ,
     NEQ,
     LT,
     LTE,
     GT,
-    GTE
+    GTE,
+    PLUS,
+    MINUS
 };
+
 const int LABEL = 767;
 
 

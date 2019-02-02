@@ -4,24 +4,49 @@
 
 #include "utils.h"
 
-
-enum MULOP decodeMulOp(std::string mulOpStr) {
-    if (mulOpStr == "*") { return MUL;}
-    else if (mulOpStr == "/") { return DIV;}
-    else if (mulOpStr == "div") { return DIV;}
-    else if (mulOpStr == "mod") { return MOD;}
-    else if (mulOpStr == "and") { return AND;}
-    throw decode_exception();
+enum OP decodeMulOp(std::string opStr) {
+    switch (hash(opStr.c_str())) {
+        case hash("*"):
+            return MUL;
+        case hash("/"):
+            return DIV;
+        case hash("div"):
+            return DIV;
+        case hash("mod"):
+            return MOD;
+        case hash("and"):
+            return AND;
+        default:
+            throw decode_exception();
+    }
 }
-
-enum RELOP decodeRelOp(std::string relOpStr) {
-    if (relOpStr == "=") { return EQ;}
-    else if (relOpStr == "<>") { return NEQ;}
-    else if (relOpStr == "<") { return LT;}
-    else if (relOpStr == "<=") { return LTE;}
-    else if (relOpStr == ">") { return GT;}
-    else if (relOpStr == ">=") { return GTE;}
-    throw decode_exception();
+enum OP decodeRelOp(std::string opStr) {
+    switch (hash(opStr.c_str())) {
+        case hash("="):
+            return EQ;
+        case hash("<>"):
+            return NEQ;
+        case hash("<"):
+            return LT;
+        case hash("<="):
+            return LTE;
+        case hash(">"):
+            return GT;
+        case hash(">="):
+            return GTE;
+        default:
+            throw decode_exception();
+    }
+}
+enum OP decodeSignOp(std::string opStr) {
+    switch (hash(opStr.c_str())) {
+        case hash("+"):
+            return PLUS;
+        case hash("-"):
+            return MINUS;
+        default:
+            throw decode_exception();
+    }
 }
 
 class UnknownTypeException{};

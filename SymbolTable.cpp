@@ -14,8 +14,8 @@ int SymbolTable::insert(const std::string symbol, int tokenType) {
 
 int SymbolTable::lookup(const std::string symbol) {
     auto result = std::find_if(table.begin(), table.end(), [&symbol](const SymbolEntry arg) {
-            return arg.tokenVal == symbol;
-        });
+        return arg.tokenVal == symbol;
+    });
     if (result == table.end()) {
         return 0;
     } else {
@@ -33,10 +33,9 @@ int SymbolTable::genLabel() {
 
 void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) {
     for (int symbolIndex : symbolIndexes) {
-        SymbolEntry& entry =  operator[](symbolIndex);
+        SymbolEntry &entry = operator[](symbolIndex);
         entry.varType = type;
-        entry.place = lastFreeMemAddr + sizeOfSymbol(type);
-        lastFreeMemAddr = entry.place;
+        entry.place = getPlace(type);
     }
 }
 
@@ -50,4 +49,15 @@ int SymbolTable::insertLiteral(int value) {
     SymbolEntry entry = {.intVal = value};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
+}
+
+int SymbolTable::insertTempVar(int type) {
+    SymbolEntry entry = {.varType = INTEGER, .place = getPlace(type)};
+    return static_cast<int>(table.size() - 1);
+}
+
+int SymbolTable::getPlace(int type) {
+    int toReturn = lastFreeMemAddr;
+    lastFreeMemAddr += sizeOfSymbol(type);
+    return toReturn;
 }

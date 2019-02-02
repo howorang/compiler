@@ -30,7 +30,7 @@ OR "or"
                     return MULOP;
                 }
 {SIGNS}         {
-                    yylval = yytext[0];
+                    yylval = decodeSignOp(yytext);
                     return SIGN;
                 }
 {ASSIGN}        {

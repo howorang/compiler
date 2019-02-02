@@ -11,8 +11,19 @@
 class decode_exception {
 };
 
-enum MULOP decodeMulOp(std::string mulOpStr);
-enum RELOP decodeRelOp(std::string relOpStr);
+enum OP decodeMulOp(std::string mulOpStr);
+enum OP decodeRelOp(std::string relOpStr);
+enum OP decodeSignOp(std::string signOpStr);
 int sizeOfSymbol(int symbolType);
+
+constexpr uint64_t mix(char m, uint64_t s)
+{
+    return ((s<<7) + ~(s>>3)) + ~m;
+}
+
+constexpr uint64_t hash(const char * m)
+{
+    return (*m) ? mix(*m,hash(m+1)) : 0;
+}
 
 #endif //COMPILER_UTILS_H

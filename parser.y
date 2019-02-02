@@ -44,8 +44,10 @@ std::vector<int> declListHolder;
 program:
 PROGRAM_TOKEN ID '(' identifier_list ')'
  ';' {
+ 	declListHolder.clear();
      	int programLabel = symbolTable.genLabel();
      	symbolTable[$2].label = programLabel;
+     	emitter.simpleEmit("jump.i  #" + symbolTable[programLabel].tokenVal);
      	emitter.simpleEmit(symbolTable[programLabel].tokenVal + ":\n");
 }
 
@@ -131,17 +133,21 @@ simple_expression {}
 | simple_expression RELOP simple_expression
 
 simple_expression:
-term
+term {$$ = $1;}
 | SIGN term
-| simple_expression SIGN term {}
+| simple_expression SIGN term {
+	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, $3));
+	emitter.genCode((OP)$2, $1, $3, tempVarIndex);
+	$$=tempVarIndex;
+}
 | simple_expression OR term
 
 term:
-factor
+factor {$$ = $1;}
 | term MULOP factor
 
 factor:
-variable
+variable {$$ = $1;}
 | ID '(' expression_list ')'
 | NUM
 | '(' expression ')'
