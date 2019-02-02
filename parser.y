@@ -125,7 +125,7 @@ ID {$$ = $1;}
 
 procedure_statement:
 ID
-| ID '(' expression_list ')'
+| ID '(' expression_list ')' {emitter.genCode(WRITE, $3);}
 
 expression_list:
 expression

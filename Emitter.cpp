@@ -22,8 +22,8 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrInd
     arg2index = promoteIfNeeded(arg2index, arg1index);
     SymbolTable::SymbolEntry &result = symbolTable[resAddrIndex];
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
-    out += opCode + " " + std::to_string(symbolTable[arg1index].place) + " " +
-           std::to_string(symbolTable[arg2index].place) + " " +
+    out += opCode + ", " + std::to_string(symbolTable[arg1index].place) + ", " +
+           std::to_string(symbolTable[arg2index].place) + ", " +
            std::to_string(result.place);
     out += "\n";
 }
@@ -32,8 +32,14 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index) {
     arg1index = promoteIfNeeded(arg1index, arg2index);
     arg2index = promoteIfNeeded(arg2index, arg1index);
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
-    out += opCode + " " + std::to_string(symbolTable[arg1index].place) + " " +
+    out += opCode + ", " + std::to_string(symbolTable[arg1index].place) + ", " +
            std::to_string(symbolTable[arg2index].place);
+    out += "\n";
+}
+
+void Emitter::genCode(OP operation, int arg1index) {
+    std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
+    out += opCode + ", " + std::to_string(symbolTable[arg1index].place);
     out += "\n";
 }
 
@@ -121,6 +127,9 @@ std::string Emitter::getOpCode(OP op, int type) {
         case MOV:
             prefix = "mov";
             break;
+        case WRITE:
+            prefix = "write";
+            break;
     }
     switch (type) {
         case INTEGER:
@@ -132,5 +141,4 @@ std::string Emitter::getOpCode(OP op, int type) {
     }
     return prefix + postfix;
 }
-
 

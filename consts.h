@@ -20,7 +20,8 @@ enum OP {
     MINUS,
     INTOREAL,
     REALTOINT,
-    MOV
+    MOV,
+    WRITE
 };
 
 const int LABEL = 767;
