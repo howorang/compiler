@@ -24,9 +24,7 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrInd
     }
     SymbolTable::SymbolEntry &result = symbolTable[resAddrIndex];
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
-    out += opCode + " " + std::to_string(symbolTable[arg1index].place) + ", " +
-           std::to_string(symbolTable[arg2index].place) + ", " +
-           std::to_string(result.place);
+    out += opCode + " " + writeSymbol(arg1index) + ", " + writeSymbol(arg2index) + ", " + writeSymbol(resAddrIndex);
     out += "\n";
 }
 
@@ -36,14 +34,13 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index) {
         arg2index = promoteIfNeeded(arg2index, arg1index);
     }
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
-    out += opCode + " " + std::to_string(symbolTable[arg1index].place) + ", " +
-           std::to_string(symbolTable[arg2index].place);
+    out += opCode + " " + writeSymbol(arg1index) + ", " + writeSymbol(arg2index);
     out += "\n";
 }
 
 void Emitter::genCode(OP operation, int arg1index) {
     std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
-    out += opCode + " " + std::to_string(symbolTable[arg1index].place);
+    out += opCode + " " + writeSymbol(arg1index);
     out += "\n";
 }
 
@@ -159,5 +156,10 @@ std::string Emitter::getOpCode(OP op, int type) {
             break;
     }
     return prefix + postfix;
+}
+
+std::string Emitter::writeSymbol(int symbolIndex) {
+    SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
+    return std::string(entry.isRef ? "*" : "") + (entry.isLocal ? "BP + " : "") + std::to_string(entry.place);
 }
 

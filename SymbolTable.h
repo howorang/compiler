@@ -19,23 +19,43 @@ public:
         std::string label;
         int varType;
         int place;
-        double realVal;
-        int intVal;
         bool isSubProgram = false;
+        bool isLocal = false;
+        bool isProcedure = false;
+        bool isRef = false;
     };
+
     int insert(const std::string symbol, int tokenType);
+
     int lookup(const std::string symbol);
+
     SymbolEntry &operator[](int i);
+
     void initDeclarationList(std::vector<int> symbolIndexes, int type);
-    int insertLiteral(double value);
-    int insertLiteral(int value);
+
+    int insertLiteral(std::string value);
+
     int insertTempVar(int type);
+
+    void toggleGlobal();
+
+    bool isGlobal();
+
+    int initSubProgram(int index);
+
+    void initSubProgramParams(std::vector<std::pair<int, std::vector<int>>> paramListHolder);
 
 private:
     std::vector<SymbolEntry> table;
     int lastLabel = -1;
     int lastFreeMemAddr = 0;
+    int oldLastFreeMemAddr;
+    bool global = false;
+
     int getPlace(int type);
+
+
+    int getPlace(SymbolEntry entry);
 };
 
 

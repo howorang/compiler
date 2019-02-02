@@ -23,6 +23,7 @@ public:
     void genCode(OP operation, int arg1);
     void genCode(OP operation);
     int determineOpType(int arg1, int arg2);
+    std::string writeSymbol(int symbolIndex);
 
 private:
     std::string out;

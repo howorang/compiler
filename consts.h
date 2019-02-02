@@ -4,6 +4,7 @@
 
 #ifndef COMPILER_CONSTS_H
 #define COMPILER_CONSTS_H
+#define SUBPROGRAM_OFFSET 8
 
 enum OP {
     MUL,
@@ -25,8 +26,5 @@ enum OP {
     LEAVE,
     RETURN
 };
-
-const int LABEL = 767;
-
 
 #endif //COMPILER_CONSTS_H

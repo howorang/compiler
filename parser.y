@@ -85,6 +85,8 @@ subprogram_declarations:
 subprogram_declarations subprogram_declaration ';' {
 	emitter.genCode(LEAVE);
 	emitter.genCode(RETURN);
+	paramListHolder.clear();
+	symbolTable.toggleGlobal();
 }
 | %empty
 
@@ -98,12 +100,20 @@ FUNCTION ID arguments ':' standard_type ';' {
 	symbolTable[$2].varType = $5;
 	emitter.simpleEmit(symbolTable[$2].label + ":");
 	emitter.simpleEmit("enter #0");
+	symbolTable.toggleGlobal();
+	symbolTable.initSubProgram($2);
+	symbolTable.initSubProgramParams(paramListHolder);
+
 }
 | PROCEDURE ID arguments ';' {
 	symbolTable[$2].isSubProgram = true;
+	symbolTable[$2].isProcedure = true;
 	symbolTable[$2].label = symbolTable[$2].tokenVal;
 	emitter.simpleEmit(symbolTable[$2].label + ":");
 	emitter.simpleEmit("enter #0");
+	symbolTable.toggleGlobal();
+	symbolTable.initSubProgram($2);
+	symbolTable.initSubProgramParams(paramListHolder);
 }
 
 arguments:
@@ -123,7 +133,7 @@ identifier_list ':' type {
 	std::vector<int> ids;
         ids = idListHolder;
         idListHolder.clear();
-        paramListHolder.push_back(std::make_pair($3, ids));
+        paramListHolder.push_back(std::make_pair($5, ids));
 }
 
 compound_statement:

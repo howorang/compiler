@@ -63,22 +63,17 @@ OR "or"
 "program"       {return PROGRAM_TOKEN;}
 
 {letter}({letter}|{digit})* {
-                     int p;
-                     p = symbolTable.lookup(yytext);
-                     if (p == 0)
-                     {
-                        p = symbolTable.insert(yytext, ID);
-                     }
+                    int p = symbolTable.insert(yytext, ID);
                     yylval = p;
                     return ID;
                 }
 {digit}+.{digit}+ {
-                    yylval = symbolTable.insertLiteral(atof(yytext));
+                    yylval = symbolTable.insertLiteral(yytext);
                     return NUM;
 }
 
 {digit}+ {
-                    yylval = symbolTable.insertLiteral(atoi(yytext));
+                    yylval = symbolTable.insertLiteral(yytext);
                     return NUM;
 }
 .               {return (int) yytext[0];}
