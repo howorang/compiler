@@ -17,7 +17,9 @@ enum OP {
     GT,
     GTE,
     PLUS,
-    MINUS
+    MINUS,
+    INTOREAL,
+    REALTOINT
 };
 
 const int LABEL = 767;
