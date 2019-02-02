@@ -48,13 +48,14 @@ PROGRAM_TOKEN ID '(' identifier_list ')'
      	int programLabel = symbolTable.genLabel();
      	symbolTable[$2].label = programLabel;
      	emitter.simpleEmit("jump.i  #" + symbolTable[programLabel].tokenVal);
-     	emitter.simpleEmit(symbolTable[programLabel].tokenVal + ":\n");
+     	emitter.simpleEmit(symbolTable[programLabel].tokenVal + ":");
 }
 
 declarations
 subprogram_declarations
 compound_statement
 '.' {
+	emitter.simpleEmit("exit");
 	emitter.saveToFile("prog");
 }
 
@@ -110,7 +111,9 @@ statement
 | statement_list ';' statement
 
 statement:
-variable ASSIGNOP expression
+variable ASSIGNOP expression {
+	emitter.genCode(MOV, $3, $1);
+}
 | procedure_statement
 | compound_statement
 | IF expression THEN statement ELSE statement
@@ -129,7 +132,7 @@ expression
 | expression_list ',' expression
 
 expression:
-simple_expression {}
+simple_expression {$$ = $1;}
 | simple_expression RELOP simple_expression
 
 simple_expression:

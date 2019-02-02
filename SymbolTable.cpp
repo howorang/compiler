@@ -28,7 +28,7 @@ SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
 }
 
 int SymbolTable::genLabel() {
-    return insert(std::to_string(++lastLabel), LABEL);
+    return insert("lab" + std::to_string(++lastLabel), LABEL);
 }
 
 void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) {
@@ -53,6 +53,7 @@ int SymbolTable::insertLiteral(int value) {
 
 int SymbolTable::insertTempVar(int type) {
     SymbolEntry entry = {.varType = INTEGER, .place = getPlace(type)};
+    table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
 

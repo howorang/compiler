@@ -21,7 +21,7 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrInd
     arg1index = promoteIfNeeded(arg1index, arg2index);
     arg2index = promoteIfNeeded(arg2index, arg1index);
     SymbolTable::SymbolEntry &result = symbolTable[resAddrIndex];
-    std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
+    std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
     out += opCode + " " + std::to_string(symbolTable[arg1index].place) + " " +
            std::to_string(symbolTable[arg2index].place) + " " +
            std::to_string(result.place);
@@ -29,10 +29,11 @@ void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrInd
 }
 
 void Emitter::genCode(OP operation, int arg1index, int arg2index) {
-    SymbolTable::SymbolEntry &arg1 = symbolTable[arg1index];
-    SymbolTable::SymbolEntry &arg2 = symbolTable[arg2index];
-    std::string opCode = getOpCode(operation, NULL);
-    out += opCode + " " + std::to_string(arg1.place) + " " + std::to_string(arg2.place);
+    arg1index = promoteIfNeeded(arg1index, arg2index);
+    arg2index = promoteIfNeeded(arg2index, arg1index);
+    std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
+    out += opCode + " " + std::to_string(symbolTable[arg1index].place) + " " +
+           std::to_string(symbolTable[arg2index].place);
     out += "\n";
 }
 
@@ -81,7 +82,6 @@ int Emitter::determineOpType(int arg1index, int arg2index) {
 std::string Emitter::getOpCode(OP op, int type) {
     std::string prefix;
     std::string postfix;
-    bool requiresPostfix = true;
     switch (op) {
         case MUL:
             prefix = "mul";
@@ -113,22 +113,22 @@ std::string Emitter::getOpCode(OP op, int type) {
             prefix = "sub";
             break;
         case REALTOINT:
-            requiresPostfix = false;
             prefix = "realtoint";
             break;
         case INTOREAL:
-            requiresPostfix = false;
             prefix = "inttoreal";
+            break;
+        case MOV:
+            prefix = "mov";
+            break;
     }
-    if (requiresPostfix) {
-        switch (type) {
-            case INTEGER:
-                postfix = ".i";
-                break;
-            case REAL:
-                postfix = ".r";
-                break;
-        }
+    switch (type) {
+        case INTEGER:
+            postfix = ".i";
+            break;
+        case REAL:
+            postfix = ".r";
+            break;
     }
     return prefix + postfix;
 }
