@@ -183,7 +183,8 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
         toEmit += "*";
     }
     if (entry.isLocal) {
-        toEmit += "BP+";
+        toEmit += "BP";
+        toEmit += entry.place > 0 ? "+" : "";
     }
     if (vm == address) {
         toEmit += "#";

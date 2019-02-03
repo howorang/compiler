@@ -99,7 +99,7 @@ FUNCTION ID arguments ':' standard_type ';' {
 	symbolTable[$2].label = symbolTable[$2].tokenVal;
 	symbolTable[$2].varType = $5;
 	emitter.simpleEmit(symbolTable[$2].label + ":");
-	emitter.simpleEmit("enter #{allocSize}");
+	emitter.simpleEmit("enter.i #{allocSize}");
 	symbolTable.toggleGlobal();
 	symbolTable.initSubProgram($2, paramListHolder);
 
@@ -109,7 +109,7 @@ FUNCTION ID arguments ':' standard_type ';' {
 	symbolTable[$2].isProcedure = true;
 	symbolTable[$2].label = symbolTable[$2].tokenVal;
 	emitter.simpleEmit(symbolTable[$2].label + ":");
-	emitter.simpleEmit("enter #{allocSize}");
+	emitter.simpleEmit("enter.i #{allocSize}");
 	symbolTable.toggleGlobal();
 	symbolTable.initSubProgram($2, paramListHolder);
 }

@@ -43,7 +43,7 @@ int SymbolTable::insertLiteral(std::string value, int type) {
 }
 
 int SymbolTable::insertTempVar(int type) {
-    SymbolEntry entry = {.varType = type, .place = getPlace(type)};
+    SymbolEntry entry = {.varType = type, .place = getPlace(type), .isLocal = !global};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
@@ -51,8 +51,8 @@ int SymbolTable::insertTempVar(int type) {
 
 int SymbolTable::getPlace(int type) {
     int toReturn = lastFreeMemAddr;
-    lastFreeMemAddr += sizeOfSymbol(type);
-    return toReturn;
+    lastFreeMemAddr += global ? sizeOfSymbol(type): -sizeOfSymbol(type);
+    return global? toReturn : lastFreeMemAddr;
 }
 
 void SymbolTable::toggleGlobal() {
@@ -117,5 +117,5 @@ int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {
 }
 
 int SymbolTable::getAllocatedMem() {
-    return lastFreeMemAddr;
+    return std::abs(lastFreeMemAddr);
 }
