@@ -7,19 +7,18 @@
 SymbolTable symbolTable = SymbolTable();
 
 int SymbolTable::insert(const std::string symbol, int tokenType) {
-    SymbolEntry entry = {.tokenType = tokenType, .tokenVal = symbol};
+    SymbolEntry entry = {.tokenType = tokenType, .tokenVal = symbol, .isLocal = !global};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
 
 int SymbolTable::lookup(const std::string symbol) {
-    auto result = std::find_if(table.begin(), table.end(), [this, &symbol](const SymbolEntry arg) {
-        return arg.tokenVal == symbol && arg.isLocal == !global;
-    });
-    if (result == table.end()) {
-        return 0;
-    } else {
-        return static_cast<int>(std::distance(table.begin(), result));
+    for (int i = table.size() -1; i >= 0; i--) {
+        if (table[i].isLocal == !global && table[i].tokenVal == symbol) {
+            return i;
+        } else {
+            return -1;
+        }
     }
 }
 
@@ -77,9 +76,9 @@ int SymbolTable::initSubProgram(int index) {
         case false:
             lastFreeMemAddr = SUBPROGRAM_OFFSET + 4;
             SymbolEntry entry = {.varType = symbolEntry.varType,
-                                 .place = lastFreeMemAddr,
-                                 .isLocal = true,
-                                 .isRef = true};
+                    .place = lastFreeMemAddr,
+                    .isLocal = true,
+                    .isRef = true};
             table.push_back(entry);
             break;
     }

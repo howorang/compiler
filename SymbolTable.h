@@ -50,7 +50,7 @@ private:
     int lastLabel = -1;
     int lastFreeMemAddr = 0;
     int oldLastFreeMemAddr;
-    bool global = false;
+    bool global = true;
 
     int getPlace(int type);
 
