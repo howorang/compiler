@@ -56,6 +56,8 @@ private:
 
 
     int getPlace(SymbolEntry entry);
+
+    void removeLocalSymbols();
 };
 
 

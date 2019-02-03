@@ -13,7 +13,7 @@ int SymbolTable::insert(const std::string symbol, int tokenType) {
 }
 
 int SymbolTable::lookup(const std::string symbol) {
-    for (int i = table.size() -1; i >= 0; i--) {
+    for (int i = table.size() - 1; i >= 0; i--) {
         if (table[i].isLocal == !global && table[i].tokenVal == symbol) {
             return i;
         } else {
@@ -58,9 +58,19 @@ void SymbolTable::toggleGlobal() {
         oldLastFreeMemAddr = lastFreeMemAddr;
     } else {
         lastFreeMemAddr = oldLastFreeMemAddr;
+        removeLocalSymbols();
     }
     global = !global;
 }
+
+void SymbolTable::removeLocalSymbols() {
+    table.erase(
+            std::remove_if(
+                    table.begin(), table.end(),
+                    [](SymbolEntry &entry) { return entry.isLocal; }),
+            table.end());
+}
+
 
 bool SymbolTable::isGlobal() {
     return global;
@@ -74,12 +84,15 @@ int SymbolTable::initSubProgram(int index) {
             return -46574321;
             break;
         case false:
-            lastFreeMemAddr = SUBPROGRAM_OFFSET + 4;
-            SymbolEntry entry = {.varType = symbolEntry.varType,
+            lastFreeMemAddr = SUBPROGRAM_OFFSET;
+            SymbolEntry entry = {
+                    .tokenVal = symbolEntry.tokenVal,
+                    .varType = symbolEntry.varType,
                     .place = lastFreeMemAddr,
                     .isLocal = true,
                     .isRef = true};
             table.push_back(entry);
+            return static_cast<int>(table.size() - 1);
             break;
     }
 

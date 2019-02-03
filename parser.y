@@ -101,7 +101,7 @@ FUNCTION ID arguments ':' standard_type ';' {
 	emitter.simpleEmit(symbolTable[$2].label + ":");
 	emitter.simpleEmit("enter #0");
 	symbolTable.toggleGlobal();
-	symbolTable.initSubProgram($2);
+	$$ = symbolTable.initSubProgram($2);
 	symbolTable.initSubProgramParams(paramListHolder);
 
 }
