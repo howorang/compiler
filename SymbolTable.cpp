@@ -35,7 +35,8 @@ void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) 
 }
 
 int SymbolTable::insertLiteral(std::string value) {
-    SymbolEntry entry = {.tokenVal = std::move(value)};
+    SymbolEntry entry = {.tokenVal = std::move(value),
+                         .isLiteral = true};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }

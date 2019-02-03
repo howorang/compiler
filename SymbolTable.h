@@ -23,6 +23,7 @@ public:
         bool isLocal = false;
         bool isProcedure = false;
         bool isRef = false;
+        bool isLiteral = false;
     };
 
     int insert(const std::string symbol, int tokenType);
@@ -53,7 +54,6 @@ private:
     bool global = true;
 
     int getPlace(int type);
-
 
     int getPlace(SymbolEntry entry);
 

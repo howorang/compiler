@@ -160,6 +160,10 @@ std::string Emitter::getOpCode(OP op, int type) {
 
 std::string Emitter::writeSymbol(int symbolIndex) {
     SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
-    return std::string(entry.isRef ? "*" : "") + (entry.isLocal ? "BP + " : "") + std::to_string(entry.place);
+    if (!entry.isLiteral) {
+        return std::string(entry.isRef ? "*" : "") + (entry.isLocal ? "BP + " : "") + std::to_string(entry.place);
+    } else {
+        return "#" + entry.tokenVal;
+    }
 }
 

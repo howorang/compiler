@@ -195,7 +195,7 @@ factor {$$ = $1;}
 factor:
 variable {$$ = $1;}
 | ID '(' expression_list ')'
-| NUM
+| NUM {$$ = $1;}
 | '(' expression ')'
 | NOT factor
 
