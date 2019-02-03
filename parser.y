@@ -4,6 +4,7 @@
 
 std::vector<int> idListHolder;
 std::vector<std::pair<int, std::vector<int>>> paramListHolder;
+std::vector<int> expressionListHolder;
 %}
 
 %debug
@@ -168,11 +169,16 @@ ID {
 }
 | ID '(' expression_list ')' {
 	emitter.genCode(CALL, $1, label);
+	expressionListHolder.clear();
 }
 
 expression_list:
-expression
-| expression_list ',' expression
+expression {
+	expressionListHolder.push_back($1);
+}
+| expression_list ',' expression {
+	expressionListHolder.push_back($3);
+}
 
 expression:
 simple_expression {$$ = $1;}
@@ -198,7 +204,13 @@ factor {$$ = $1;}
 
 factor:
 variable {$$ = $1;}
-| ID '(' expression_list ')'
+| ID '(' expression_list ')' {
+	emitter.emmitFuncArgs($1, $3);
+	emitter.genCode(CALL, $1, label);
+	emitter.genCode(INCSP, $1, value);
+	expressionListHolder.clear();
+
+}
 | NUM {$$ = $1;}
 | '(' expression ')'
 | NOT factor
