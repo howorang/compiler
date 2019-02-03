@@ -18,12 +18,12 @@ public:
 
     void saveToFile(std::string fileName);
 
-    void genCode(OP operation, int arg1, int arg2, int resAddr); // arg1 and arg2 should be symbolTable indexes
-    void genCode(OP operation, int arg1, int arg2); // arg1 and arg2 should be symbolTable indexes
-    void genCode(OP operation, int arg1);
+    void genCode(OP operation, int arg1, VARMODE vm1, int arg2, VARMODE vm2, int resAddr, VARMODE vm3); // arg1 and arg2 should be symbolTable indexes
+    void genCode(OP operation, int arg1, VARMODE vm1, int arg2, VARMODE vm2); // arg1 and arg2 should be symbolTable indexes
+    void genCode(OP operation, int arg1, VARMODE vm1);
     void genCode(OP operation);
     int determineOpType(int arg1, int arg2);
-    std::string writeSymbol(int symbolIndex);
+    std::string writeSymbol(int symbolIndex, VARMODE varmode);
 
 private:
     std::string out;

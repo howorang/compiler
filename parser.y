@@ -99,10 +99,9 @@ FUNCTION ID arguments ':' standard_type ';' {
 	symbolTable[$2].label = symbolTable[$2].tokenVal;
 	symbolTable[$2].varType = $5;
 	emitter.simpleEmit(symbolTable[$2].label + ":");
-	emitter.simpleEmit("enter #0");
+	emitter.simpleEmit("enter #{allocSize}");
 	symbolTable.toggleGlobal();
-	$$ = symbolTable.initSubProgram($2);
-	symbolTable.initSubProgramParams(paramListHolder);
+	$$ = symbolTable.initSubProgram($2, paramListHolder);
 
 }
 | PROCEDURE ID arguments ';' {
@@ -112,8 +111,7 @@ FUNCTION ID arguments ':' standard_type ';' {
 	emitter.simpleEmit(symbolTable[$2].label + ":");
 	emitter.simpleEmit("enter #0");
 	symbolTable.toggleGlobal();
-	symbolTable.initSubProgram($2);
-	symbolTable.initSubProgramParams(paramListHolder);
+	symbolTable.initSubProgram($2, paramListHolder);
 }
 
 arguments:
@@ -151,9 +149,11 @@ statement
 
 statement:
 variable ASSIGNOP expression {
-	emitter.genCode(MOV, $3, $1);
+	emitter.genCode(MOV, $3, value, $1, value);
 }
-| procedure_statement
+| procedure_statement {
+	printf("out");
+}
 | compound_statement
 | IF expression THEN statement ELSE statement
 | WHILE expression DO statement
@@ -163,8 +163,12 @@ ID {$$ = $1;}
 | ID '[' expression ']'
 
 procedure_statement:
-ID
-| ID '(' expression_list ')' {emitter.genCode(WRITE, $3);}
+ID {
+	emitter.genCode(CALL, $1, label);
+}
+| ID '(' expression_list ')' {
+	emitter.genCode(CALL, $1, label);
+}
 
 expression_list:
 expression
@@ -179,7 +183,7 @@ term {$$ = $1;}
 | SIGN term
 | simple_expression SIGN term {
 	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, $3));
-	emitter.genCode((OP)$2, $1, $3, tempVarIndex);
+	emitter.genCode((OP)$2, $1, value, $3, value, tempVarIndex, value);
 	$$=tempVarIndex;
 }
 | simple_expression OR term
@@ -188,7 +192,7 @@ term:
 factor {$$ = $1;}
 | term MULOP factor {
 	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, $3));
-	emitter.genCode((OP)$2, $1, $3, tempVarIndex);
+	emitter.genCode((OP)$2, $1, value, $3, value, tempVarIndex, value);
 	$$=tempVarIndex;
 }
 

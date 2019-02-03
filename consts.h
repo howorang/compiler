@@ -24,7 +24,17 @@ enum OP {
     MOV,
     WRITE,
     LEAVE,
-    RETURN
+    RETURN,
+    PUSH,
+    CALL,
+    ENTER,
+    INCSP
+};
+
+enum VARMODE {
+    value,
+    address,
+    label
 };
 
 #endif //COMPILER_CONSTS_H

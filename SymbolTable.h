@@ -24,6 +24,7 @@ public:
         bool isProcedure = false;
         bool isRef = false;
         bool isLiteral = false;
+        int allocatedMemory = 0;
     };
 
     int insert(const std::string symbol, int tokenType);
@@ -42,7 +43,7 @@ public:
 
     bool isGlobal();
 
-    int initSubProgram(int index);
+    int initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder);
 
     void initSubProgramParams(std::vector<std::pair<int, std::vector<int>>> paramListHolder);
 

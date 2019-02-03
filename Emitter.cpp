@@ -17,30 +17,32 @@ void Emitter::saveToFile(std::string fileName) {
     outfile.close();
 }
 
-void Emitter::genCode(OP operation, int arg1index, int arg2index, int resAddrIndex) {
+void
+Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, VARMODE vm2, int resAddrIndex, VARMODE vm3) {
     if (operation != INTOREAL && operation != REALTOINT) {
         arg1index = promoteIfNeeded(arg1index, arg2index);
         arg2index = promoteIfNeeded(arg2index, arg1index);
     }
     SymbolTable::SymbolEntry &result = symbolTable[resAddrIndex];
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
-    out += opCode + " " + writeSymbol(arg1index) + ", " + writeSymbol(arg2index) + ", " + writeSymbol(resAddrIndex);
+    out += opCode + " " + writeSymbol(arg1index, vm1) + ", " + writeSymbol(arg2index, vm2) + ", " +
+           writeSymbol(resAddrIndex, vm3);
     out += "\n";
 }
 
-void Emitter::genCode(OP operation, int arg1index, int arg2index) {
+void Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, VARMODE vm2) {
     if (operation != INTOREAL && operation != REALTOINT) {
         arg1index = promoteIfNeeded(arg1index, arg2index);
         arg2index = promoteIfNeeded(arg2index, arg1index);
     }
     std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
-    out += opCode + " " + writeSymbol(arg1index) + ", " + writeSymbol(arg2index);
+    out += opCode + " " + writeSymbol(arg1index, vm1) + ", " + writeSymbol(arg2index, vm2);
     out += "\n";
 }
 
-void Emitter::genCode(OP operation, int arg1index) {
+void Emitter::genCode(OP operation, int arg1index, VARMODE vm1) {
     std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
-    out += opCode + " " + writeSymbol(arg1index);
+    out += opCode + " " + writeSymbol(arg1index, vm1);
     out += "\n";
 }
 
@@ -75,7 +77,7 @@ int Emitter::convert(int arg1index, int toType) {
                 tempIndex = symbolTable.insertTempVar(INTEGER);
                 break;
         }
-        genCode(conversionOperation, arg1index, tempIndex);
+        genCode(conversionOperation, arg1index, value, tempIndex, value);
         return tempIndex;
     }
     return arg1index;
@@ -93,7 +95,8 @@ int Emitter::determineOpType(int arg1index, int arg2index) {
 
 std::string Emitter::getOpCode(OP op, int type) {
     std::string prefix;
-    std::string postfix;
+    std::string postfix = ".i";
+    bool hasPostfix = true;
     switch (op) {
         case MUL:
             prefix = "mul";
@@ -138,30 +141,38 @@ std::string Emitter::getOpCode(OP op, int type) {
             break;
         case LEAVE:
             prefix = "leave";
+            hasPostfix = false;
             break;
         case RETURN:
             prefix = "return";
+            hasPostfix = false;
+            break;
+        case PUSH:
+            prefix = "push";
+            break;
+        case CALL:
+            prefix = "call";
+            break;
+        case ENTER:
+            prefix = "enter";
+            break;
+        case INCSP:
+            prefix = "incsp";
             break;
         default:
             throw "Unknown operation";
     }
-    switch (type) {
-        case INTEGER:
-            postfix = ".i";
-            break;
-        case REAL:
-            postfix = ".r";
-            break;
-        default:
-            break;
+    if (type == REAL) {
+        postfix = ".r";
     }
-    return prefix + postfix;
+    return hasPostfix ? prefix + postfix : prefix;
 }
 
-std::string Emitter::writeSymbol(int symbolIndex) {
+std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
-    if (!entry.isLiteral) {
-        return std::string(entry.isRef ? "*" : "") + (entry.isLocal ? "BP + " : "") + std::to_string(entry.place);
+    if (!entry.isLiteral && vm != label) {
+        return std::string(entry.isRef && vm == value ? "*" : "") + (entry.isLocal ? "BP + " : "") +
+               std::to_string(entry.place);
     } else {
         return "#" + entry.tokenVal;
     }

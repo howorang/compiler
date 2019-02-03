@@ -36,7 +36,7 @@ void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) 
 
 int SymbolTable::insertLiteral(std::string value) {
     SymbolEntry entry = {.tokenVal = std::move(value),
-                         .isLiteral = true};
+            .isLiteral = true};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
@@ -77,30 +77,8 @@ bool SymbolTable::isGlobal() {
     return global;
 }
 
-int SymbolTable::initSubProgram(int index) {
+int SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder) {
     SymbolEntry &symbolEntry = operator[](index);
-    switch (symbolEntry.isProcedure) {
-        case true:
-            lastFreeMemAddr = SUBPROGRAM_OFFSET;
-            return -46574321;
-            break;
-        case false:
-            lastFreeMemAddr = SUBPROGRAM_OFFSET;
-            SymbolEntry entry = {
-                    .tokenVal = symbolEntry.tokenVal,
-                    .varType = symbolEntry.varType,
-                    .place = lastFreeMemAddr,
-                    .isLocal = true,
-                    .isRef = true};
-            table.push_back(entry);
-            return static_cast<int>(table.size() - 1);
-            break;
-    }
-
-}
-
-void
-SymbolTable::initSubProgramParams(std::vector<std::pair<int, std::vector<int>>> paramListHolder) {
     for (const auto &type_indexes : paramListHolder) {
         for (const auto &index : type_indexes.second) {
             SymbolEntry &entry = operator[](index);
@@ -110,6 +88,23 @@ SymbolTable::initSubProgramParams(std::vector<std::pair<int, std::vector<int>>> 
             entry.varType = type_indexes.first;
         }
     }
+    switch (symbolEntry.isProcedure) {
+        case true:
+            lastFreeMemAddr = SUBPROGRAM_OFFSET;
+            return -46574321;;
+        case false:
+            lastFreeMemAddr = SUBPROGRAM_OFFSET;
+            //PUTTING IN TEMP VAR FOR FUNCTION RESULT
+            SymbolEntry entry = {
+                    .tokenVal = symbolEntry.tokenVal,
+                    .varType = symbolEntry.varType,
+                    .place = lastFreeMemAddr,
+                    .isLocal = true,
+                    .isRef = true};
+            table.push_back(entry);
+            return static_cast<int>(table.size() - 1);
+    }
+
 }
 
 int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {
