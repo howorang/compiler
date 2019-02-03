@@ -15,6 +15,7 @@ enum OP decodeMulOp(std::string mulOpStr);
 enum OP decodeRelOp(std::string relOpStr);
 enum OP decodeSignOp(std::string signOpStr);
 int sizeOfSymbol(int symbolType);
+bool stringReplace(std::string& str, const std::string& from, const std::string& to);
 
 constexpr uint64_t mix(char m, uint64_t s)
 {

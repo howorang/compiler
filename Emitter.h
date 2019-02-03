@@ -24,6 +24,8 @@ public:
     void genCode(OP operation);
     int determineOpType(int arg1, int arg2);
     std::string writeSymbol(int symbolIndex, VARMODE varmode);
+    int emmitFunc(int funcIndex, std::vector<int> expressionListHolder);
+    void exitSubProgramDecl();
 
 private:
     std::string out;

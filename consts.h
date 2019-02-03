@@ -34,6 +34,7 @@ enum OP {
 enum VARMODE {
     value,
     address,
+    direct,
     label
 };
 

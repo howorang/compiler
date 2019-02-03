@@ -84,8 +84,7 @@ INTEGER {$$ = INTEGER;}
 
 subprogram_declarations:
 subprogram_declarations subprogram_declaration ';' {
-	emitter.genCode(LEAVE);
-	emitter.genCode(RETURN);
+	emitter.exitSubProgramDecl();
 	paramListHolder.clear();
 	symbolTable.toggleGlobal();
 }
@@ -102,7 +101,7 @@ FUNCTION ID arguments ':' standard_type ';' {
 	emitter.simpleEmit(symbolTable[$2].label + ":");
 	emitter.simpleEmit("enter #{allocSize}");
 	symbolTable.toggleGlobal();
-	$$ = symbolTable.initSubProgram($2, paramListHolder);
+	symbolTable.initSubProgram($2, paramListHolder);
 
 }
 | PROCEDURE ID arguments ';' {
@@ -110,7 +109,7 @@ FUNCTION ID arguments ':' standard_type ';' {
 	symbolTable[$2].isProcedure = true;
 	symbolTable[$2].label = symbolTable[$2].tokenVal;
 	emitter.simpleEmit(symbolTable[$2].label + ":");
-	emitter.simpleEmit("enter #0");
+	emitter.simpleEmit("enter #{allocSize}");
 	symbolTable.toggleGlobal();
 	symbolTable.initSubProgram($2, paramListHolder);
 }
@@ -153,7 +152,7 @@ variable ASSIGNOP expression {
 	emitter.genCode(MOV, $3, value, $1, value);
 }
 | procedure_statement {
-	printf("out");
+
 }
 | compound_statement
 | IF expression THEN statement ELSE statement
@@ -203,11 +202,18 @@ factor {$$ = $1;}
 }
 
 factor:
-variable {$$ = $1;}
-| ID '(' expression_list ')' {
-	emitter.emmitFuncArgs($1, $3);
-	emitter.genCode(CALL, $1, label);
-	emitter.genCode(INCSP, $1, value);
+variable { // FUN CALL WITHOUT ARGS
+	//PASCAL IS FUCKING STUPID
+	symbolTable.lookup(symbolTable[$1].tokenVal);
+	if(symbolTable[$1].isSubProgram && !symbolTable[$1].isProcedure) {
+		$$ = emitter.emmitFunc($1, expressionListHolder);
+	} else {
+		$$=$1;
+	}
+
+}
+| ID '(' expression_list ')' { // FUN CALL WITH ARGS
+	$$ = emitter.emmitFunc($1, expressionListHolder);
 	expressionListHolder.clear();
 
 }

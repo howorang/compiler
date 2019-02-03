@@ -16,10 +16,9 @@ int SymbolTable::lookup(const std::string symbol) {
     for (int i = table.size() - 1; i >= 0; i--) {
         if (table[i].isLocal == !global && table[i].tokenVal == symbol) {
             return i;
-        } else {
-            return -1;
         }
     }
+    return -1;
 }
 
 SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
@@ -57,6 +56,7 @@ int SymbolTable::getPlace(int type) {
 void SymbolTable::toggleGlobal() {
     if (global) {
         oldLastFreeMemAddr = lastFreeMemAddr;
+        lastFreeMemAddr = 0;
     } else {
         lastFreeMemAddr = oldLastFreeMemAddr;
         removeLocalSymbols();
@@ -77,34 +77,33 @@ bool SymbolTable::isGlobal() {
     return global;
 }
 
-int SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder) {
+void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder) {
+    int incsp = SUBPROGRAM_OFFSET;
     SymbolEntry &symbolEntry = operator[](index);
+    if (symbolEntry.isProcedure) {
+    } else {
+        //PUTTING IN TEMP VAR FOR FUNCTION RESULT
+        incsp += 4;
+        SymbolEntry entry = {
+                .tokenVal = symbolEntry.tokenVal,
+                .varType = symbolEntry.varType,
+                .place = incsp,
+                .isLocal = true,
+                .isRef = true};
+        table.push_back(entry);
+    }
+
     for (const auto &type_indexes : paramListHolder) {
-        for (const auto &index : type_indexes.second) {
-            SymbolEntry &entry = operator[](index);
+        for (const auto &symbolIndex : type_indexes.second) {
+            incsp += 4;
+            SymbolEntry &entry = operator[](symbolIndex);
             entry.isRef = true;
             entry.isLocal = true;
-            //entry.place = ;
+            entry.place = incsp;
             entry.varType = type_indexes.first;
         }
     }
-    switch (symbolEntry.isProcedure) {
-        case true:
-            lastFreeMemAddr = SUBPROGRAM_OFFSET;
-            return -46574321;;
-        case false:
-            lastFreeMemAddr = SUBPROGRAM_OFFSET;
-            //PUTTING IN TEMP VAR FOR FUNCTION RESULT
-            SymbolEntry entry = {
-                    .tokenVal = symbolEntry.tokenVal,
-                    .varType = symbolEntry.varType,
-                    .place = lastFreeMemAddr,
-                    .isLocal = true,
-                    .isRef = true};
-            table.push_back(entry);
-            return static_cast<int>(table.size() - 1);
-    }
-
+    symbolEntry.incsp = incsp - 4;
 }
 
 int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {
@@ -113,4 +112,8 @@ int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {
     } else {
         return getPlace(entry.varType);
     }
+}
+
+int SymbolTable::getAllocatedMem() {
+    return lastFreeMemAddr;
 }

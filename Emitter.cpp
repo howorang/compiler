@@ -41,9 +41,14 @@ void Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, V
 }
 
 void Emitter::genCode(OP operation, int arg1index, VARMODE vm1) {
-    std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
-    out += opCode + " " + writeSymbol(arg1index, vm1);
-    out += "\n";
+    if (operation == INCSP) {
+        out += "incsp " + std::to_string(symbolTable[arg1index].incsp) + "\n";
+        return;
+    } else {
+        std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
+        out += opCode + " " + writeSymbol(arg1index, vm1);
+        out += "\n";
+    }
 }
 
 void Emitter::genCode(OP operation) {
@@ -170,11 +175,40 @@ std::string Emitter::getOpCode(OP op, int type) {
 
 std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
-    if (!entry.isLiteral && vm != label) {
-        return std::string(entry.isRef && vm == value ? "*" : "") + (entry.isLocal ? "BP + " : "") +
-               std::to_string(entry.place);
-    } else {
+    if (vm == label) {
         return "#" + entry.tokenVal;
     }
+    std::string toEmit;
+    if (entry.isRef && vm == value) {
+        toEmit += "*";
+    }
+    if (entry.isLocal) {
+        toEmit += "BP+";
+    }
+    if (vm == address) {
+        toEmit += "#";
+    }
+    toEmit += std::to_string(entry.place);
+    return toEmit;
+}
+
+int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
+    int funcResAddr = -1;
+    for (int symbolIndex : expressionListHolder) {
+        emitter.genCode(PUSH, symbolIndex, address);
+    }
+    if (!symbolTable[funcIndex].isProcedure) {
+        funcResAddr = symbolTable.insertTempVar(symbolTable[funcIndex].varType);
+        emitter.genCode(PUSH, funcResAddr, address);
+    }
+    emitter.genCode(CALL, funcIndex, label);
+    emitter.genCode(INCSP, funcIndex, address);
+    return funcResAddr;
+}
+
+void Emitter::exitSubProgramDecl() {
+    stringReplace(out, "{allocSize}", std::to_string(symbolTable.getAllocatedMem()));
+    emitter.genCode(LEAVE);
+    emitter.genCode(RETURN);
 }
 
