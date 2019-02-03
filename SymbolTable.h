@@ -35,7 +35,7 @@ public:
 
     void initDeclarationList(std::vector<int> symbolIndexes, int type);
 
-    int insertLiteral(std::string value);
+    int insertLiteral(std::string value, int type);
 
     int insertTempVar(int type);
 

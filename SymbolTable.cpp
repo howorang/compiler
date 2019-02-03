@@ -33,9 +33,11 @@ void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) 
     }
 }
 
-int SymbolTable::insertLiteral(std::string value) {
-    SymbolEntry entry = {.tokenVal = std::move(value),
-            .isLiteral = true};
+int SymbolTable::insertLiteral(std::string value, int type) {
+    SymbolEntry entry = {
+            .tokenVal = std::move(value),
+            .varType = type,
+            .isLiteral = true,};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
@@ -83,7 +85,6 @@ void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vect
     if (symbolEntry.isProcedure) {
     } else {
         //PUTTING IN TEMP VAR FOR FUNCTION RESULT
-        incsp += 4;
         SymbolEntry entry = {
                 .tokenVal = symbolEntry.tokenVal,
                 .varType = symbolEntry.varType,
@@ -91,19 +92,20 @@ void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vect
                 .isLocal = true,
                 .isRef = true};
         table.push_back(entry);
+        incsp += 4;
     }
 
     for (const auto &type_indexes : paramListHolder) {
         for (const auto &symbolIndex : type_indexes.second) {
-            incsp += 4;
             SymbolEntry &entry = operator[](symbolIndex);
             entry.isRef = true;
             entry.isLocal = true;
             entry.place = incsp;
             entry.varType = type_indexes.first;
+            incsp += 4;
         }
     }
-    symbolEntry.incsp = incsp - 4;
+    symbolEntry.incsp = incsp - SUBPROGRAM_OFFSET;
 }
 
 int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {

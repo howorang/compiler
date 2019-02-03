@@ -73,12 +73,12 @@ OR "or"
                     return ID;
                 }
 {digit}+.{digit}+ {
-                    yylval = symbolTable.insertLiteral(yytext);
+                    yylval = symbolTable.insertLiteral(yytext, REAL);
                     return NUM;
 }
 
 {digit}+ {
-                    yylval = symbolTable.insertLiteral(yytext);
+                    yylval = symbolTable.insertLiteral(yytext, INTEGER);
                     return NUM;
 }
 .               {return (int) yytext[0];}

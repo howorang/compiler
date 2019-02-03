@@ -42,7 +42,7 @@ void Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, V
 
 void Emitter::genCode(OP operation, int arg1index, VARMODE vm1) {
     if (operation == INCSP) {
-        out += "incsp " + std::to_string(symbolTable[arg1index].incsp) + "\n";
+        out += "incsp.i " + std::to_string(symbolTable[arg1index].incsp) + "\n";
         return;
     } else {
         std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
@@ -175,7 +175,7 @@ std::string Emitter::getOpCode(OP op, int type) {
 
 std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
-    if (vm == label) {
+    if (vm == label || symbolTable[symbolIndex].isLiteral) {
         return "#" + entry.tokenVal;
     }
     std::string toEmit;
