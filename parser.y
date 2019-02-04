@@ -5,6 +5,7 @@
 std::vector<int> idListHolder;
 std::vector<std::pair<int, std::vector<int>>> paramListHolder;
 std::vector<int> expressionListHolder;
+array_declaration_holder arrayDeclarationHolder;
 %}
 
 %debug
@@ -69,14 +70,19 @@ ID {idListHolder.push_back($1);}
 
 declarations:
 declarations VAR identifier_list ':' type ';' {
-	symbolTable.initDeclarationList(idListHolder, $5);
+	symbolTable.initDeclarationList(idListHolder, $5, arrayDeclarationHolder);
 	idListHolder.clear();
 }
 | %empty
 
 type:
 standard_type {$$ = $1;}
-| ARRAY '[' NUM RANGEOP NUM ']' OF standard_type
+| ARRAY '[' NUM RANGEOP NUM ']' OF standard_type {
+	arrayDeclarationHolder.low = atoi(symbolTable[$3].tokenVal);
+	arrayDeclarationHolder.high = atoi(symbolTable[$5].tokenVal);
+	arrayDeclarationHolder.type = $8;
+	$$ = ARRAY;
+}
 
 standard_type:
 INTEGER {$$ = INTEGER;}
@@ -160,7 +166,9 @@ variable ASSIGNOP expression {
 
 variable:
 ID {$$ = $1;}
-| ID '[' expression ']'
+| ID '[' expression ']' {
+
+}
 
 procedure_statement:
 ID {

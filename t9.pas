@@ -1,4 +1,4 @@
-program sort(input,output);
+nprogram sort(input,output);
 var j,i,o:integer;
 var p :array [1..10] of integer;
 var b:integer;

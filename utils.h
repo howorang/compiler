@@ -8,6 +8,12 @@
 #include "global.h"
 #include "consts.h"
 
+struct array_declaration_holder {
+    int low;
+    int high;
+    int type;
+};
+
 class decode_exception {
 };
 

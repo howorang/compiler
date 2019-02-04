@@ -25,11 +25,18 @@ SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
     return table[i];
 }
 
-void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type) {
+void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type,
+        array_declaration_holder arrayDeclarationHolder) {
     for (int symbolIndex : symbolIndexes) {
         SymbolEntry &entry = operator[](symbolIndex);
         entry.varType = type;
         entry.place = getPlace(type);
+        if (type == ARRAY) {
+            entry.isArray = true,
+            entry.low = arrayDeclarationHolder.low,
+            entry.high = arrayDeclarationHolder.high;
+            lastFreeMemAddr += (entry.high - entry.low - 1) * sizeOfSymbol(entry.varType);
+        }
     }
 }
 

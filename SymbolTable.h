@@ -26,6 +26,9 @@ public:
         bool isLiteral = false;
         int incsp = 0;
         std::vector<int> paramListTypeSignature;
+        bool isArray;
+        int low;
+        int high;
     };
 
     int insert(const std::string symbol, int tokenType);
@@ -34,7 +37,7 @@ public:
 
     SymbolEntry &operator[](int i);
 
-    void initDeclarationList(std::vector<int> symbolIndexes, int type);
+    void initDeclarationList(std::vector<int> symbolIndexes, int type, array_declaration_holder arrayDeclarationHolder);
 
     int insertLiteral(std::string value, int type);
 
@@ -47,6 +50,7 @@ public:
     void initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder);
 
     int getAllocatedMem();
+
 private:
     std::vector<SymbolEntry> table;
     int lastLabel = -1;
