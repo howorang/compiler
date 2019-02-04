@@ -153,16 +153,20 @@ std::string Emitter::getOpCode(OP op, int type) {
             hasPostfix = false;
             break;
         case PUSH:
-            prefix = "push";
+            prefix = "push.i";
+            hasPostfix = false;
             break;
         case CALL:
-            prefix = "call";
+            prefix = "call.i";
+            hasPostfix = false;
             break;
         case ENTER:
-            prefix = "enter";
+            prefix = "enter.i";
+            hasPostfix = false;
             break;
         case INCSP:
-            prefix = "incsp";
+            prefix = "incsp.i";
+            hasPostfix = false;
             break;
         default:
             throw "Unknown operation";

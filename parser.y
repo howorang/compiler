@@ -167,7 +167,11 @@ ID {
 	emitter.emmitFunc($1, expressionListHolder);
 }
 | ID '(' expression_list ')' {
-	emitter.emmitFunc($1, expressionListHolder);
+	if(symbolTable[$1].tokenVal == "write") {
+		emitter.genCode(WRITE, expressionListHolder[0], value);
+	} else {
+		emitter.emmitFunc($1, expressionListHolder);
+        }
         expressionListHolder.clear();
 }
 
