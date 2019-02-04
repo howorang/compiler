@@ -164,11 +164,11 @@ ID {$$ = $1;}
 
 procedure_statement:
 ID {
-	emitter.genCode(CALL, $1, label);
+	emitter.emmitFunc($1, expressionListHolder);
 }
 | ID '(' expression_list ')' {
-	emitter.genCode(CALL, $1, label);
-	expressionListHolder.clear();
+	emitter.emmitFunc($1, expressionListHolder);
+        expressionListHolder.clear();
 }
 
 expression_list:

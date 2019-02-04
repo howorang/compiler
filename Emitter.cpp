@@ -196,7 +196,13 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
 int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
     int funcResAddr = -1;
     for (int symbolIndex : expressionListHolder) {
-        emitter.genCode(PUSH, symbolIndex, address);
+        int symbolToEmit = symbolIndex;
+        if (symbolTable[symbolIndex].isLiteral) {
+            int tempVarIndex = symbolTable.insertTempVar(symbolTable[symbolIndex].varType);
+            emitter.genCode(MOV, symbolIndex, value, tempVarIndex, value);
+            symbolToEmit = tempVarIndex;
+        }
+        emitter.genCode(PUSH, symbolToEmit, address);
     }
     if (!symbolTable[funcIndex].isProcedure) {
         funcResAddr = symbolTable.insertTempVar(symbolTable[funcIndex].varType);
