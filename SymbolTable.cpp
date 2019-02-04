@@ -95,8 +95,10 @@ void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vect
         incsp += 4;
     }
 
-    for (const auto &type_indexes : paramListHolder) {
-        for (const auto &symbolIndex : type_indexes.second) {
+    for (size_t i = paramListHolder.size(); i--;) {
+        const auto &type_indexes = paramListHolder[i];
+        for (size_t j = type_indexes.second.size(); j--;){
+            const auto &symbolIndex = type_indexes.second[j];
             SymbolEntry &entry = operator[](symbolIndex);
             entry.isRef = true;
             entry.isLocal = true;

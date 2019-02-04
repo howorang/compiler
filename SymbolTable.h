@@ -45,8 +45,6 @@ public:
 
     void initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder);
 
-    void initSubProgramParams(std::vector<std::pair<int, std::vector<int>>> paramListHolder);
-
     int getAllocatedMem();
 private:
     std::vector<SymbolEntry> table;
