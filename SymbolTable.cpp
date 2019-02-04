@@ -105,9 +105,11 @@ void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vect
             entry.place = incsp;
             entry.varType = type_indexes.first;
             incsp += 4;
+            symbolEntry.paramListTypeSignature.push_back(type_indexes.first);
         }
     }
     symbolEntry.incsp = incsp - SUBPROGRAM_OFFSET;
+    std::reverse(symbolEntry.paramListTypeSignature.begin(), symbolEntry.paramListTypeSignature.end());
 }
 
 int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {

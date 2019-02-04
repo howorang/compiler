@@ -195,12 +195,17 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
 
 int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
     int funcResAddr = -1;
-    for (int symbolIndex : expressionListHolder) {
+    std::vector<int> &paramListTypeSignature = symbolTable[funcIndex].paramListTypeSignature;
+    for (int i = 0; i < expressionListHolder.size(); i++) {
+        int symbolIndex = expressionListHolder[i];
         int symbolToEmit = symbolIndex;
         if (symbolTable[symbolIndex].isLiteral) {
             int tempVarIndex = symbolTable.insertTempVar(symbolTable[symbolIndex].varType);
             emitter.genCode(MOV, symbolIndex, value, tempVarIndex, value);
             symbolToEmit = tempVarIndex;
+        }
+        if (paramListTypeSignature[i] != symbolTable[symbolToEmit].varType) {
+            symbolToEmit = convert(symbolToEmit, paramListTypeSignature[i]);
         }
         emitter.genCode(PUSH, symbolToEmit, address);
     }
@@ -208,6 +213,7 @@ int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
         funcResAddr = symbolTable.insertTempVar(symbolTable[funcIndex].varType);
         emitter.genCode(PUSH, funcResAddr, address);
     }
+    
     emitter.genCode(CALL, funcIndex, label);
     emitter.genCode(INCSP, funcIndex, address);
     return funcResAddr;

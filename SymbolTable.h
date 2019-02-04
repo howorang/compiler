@@ -25,6 +25,7 @@ public:
         bool isRef = false;
         bool isLiteral = false;
         int incsp = 0;
+        std::vector<int> paramListTypeSignature;
     };
 
     int insert(const std::string symbol, int tokenType);
