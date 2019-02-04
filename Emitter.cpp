@@ -193,6 +193,10 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     if (vm == address) {
         toEmit += "#";
     }
+
+    if (vm == direct) {
+        toEmit += "#" + std::to_string(symbolIndex);
+    }
     toEmit += std::to_string(entry.place);
     return toEmit;
 }
@@ -217,7 +221,7 @@ int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
         funcResAddr = symbolTable.insertTempVar(symbolTable[funcIndex].varType);
         emitter.genCode(PUSH, funcResAddr, address);
     }
-    
+
     emitter.genCode(CALL, funcIndex, label);
     emitter.genCode(INCSP, funcIndex, address);
     return funcResAddr;
@@ -227,5 +231,21 @@ void Emitter::exitSubProgramDecl() {
     stringReplace(out, "{allocSize}", std::to_string(symbolTable.getAllocatedMem()));
     emitter.genCode(LEAVE);
     emitter.genCode(RETURN);
+}
+
+int Emitter::emmitArray(int arrayIndex, int subscriptVarIndex) {
+    SymbolTable::SymbolEntry &arrayEntry = symbolTable[arrayIndex];
+    SymbolTable::SymbolEntry &subscriptEntry = symbolTable[subscriptVarIndex];
+
+    int rangeTemp = symbolTable.insertTempVar(INTEGER);
+    out += "sub.i #" + std::to_string(arrayEntry.high), " #" + std::to_string(arrayEntry.low) + " " +
+                                                        std::to_string(symbolTable[rangeTemp].place) + "\n";
+    out += "mul.i " + std::to_string(symbolTable[rangeTemp].place), " #" +
+                                                                    std::to_string(sizeOfSymbol(arrayEntry.varType)) +
+                                                                    " " +
+                                                                    std::to_string(symbolTable[rangeTemp].place) + "\n";
+    int arrayRef = symbolTable.insertTempVar(INTEGER, true);
+    genCode(PLUS, arrayEntry.place, direct, arrayRef, value);
+
 }
 

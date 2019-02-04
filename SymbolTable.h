@@ -11,6 +11,8 @@
 #include "global.h"
 #include <algorithm>
 
+struct array_declaration_holder;
+
 class SymbolTable {
 public:
     struct SymbolEntry {
@@ -41,7 +43,7 @@ public:
 
     int insertLiteral(std::string value, int type);
 
-    int insertTempVar(int type);
+    int insertTempVar(int type, bool isRef = false);
 
     void toggleGlobal();
 

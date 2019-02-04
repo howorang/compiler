@@ -26,6 +26,7 @@ public:
     std::string writeSymbol(int symbolIndex, VARMODE varmode);
     int emmitFunc(int funcIndex, std::vector<int> expressionListHolder);
     void exitSubProgramDecl();
+    int emmitArray(int arrayIndex, int subscriptVarIndex);
 
 private:
     std::string out;

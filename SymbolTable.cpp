@@ -26,16 +26,19 @@ SymbolTable::SymbolEntry &SymbolTable::operator[](int i) {
 }
 
 void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type,
-        array_declaration_holder arrayDeclarationHolder) {
+                                      array_declaration_holder arrayDeclarationHolder) {
     for (int symbolIndex : symbolIndexes) {
         SymbolEntry &entry = operator[](symbolIndex);
-        entry.varType = type;
-        entry.place = getPlace(type);
         if (type == ARRAY) {
             entry.isArray = true,
             entry.low = arrayDeclarationHolder.low,
             entry.high = arrayDeclarationHolder.high;
+            entry.varType = arrayDeclarationHolder.type;
+            entry.place = getPlace(entry.varType);
             lastFreeMemAddr += (entry.high - entry.low - 1) * sizeOfSymbol(entry.varType);
+        } else {
+            entry.varType = type;
+            entry.place = getPlace(type);
         }
     }
 }
@@ -49,8 +52,8 @@ int SymbolTable::insertLiteral(std::string value, int type) {
     return static_cast<int>(table.size() - 1);
 }
 
-int SymbolTable::insertTempVar(int type) {
-    SymbolEntry entry = {.varType = type, .place = getPlace(type), .isLocal = !global};
+int SymbolTable::insertTempVar(int type, bool isRef) {
+    SymbolEntry entry = {.varType = type, .place = getPlace(type), .isLocal = !global, .isRef = isRef};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
@@ -58,8 +61,8 @@ int SymbolTable::insertTempVar(int type) {
 
 int SymbolTable::getPlace(int type) {
     int toReturn = lastFreeMemAddr;
-    lastFreeMemAddr += global ? sizeOfSymbol(type): -sizeOfSymbol(type);
-    return global? toReturn : lastFreeMemAddr;
+    lastFreeMemAddr += global ? sizeOfSymbol(type) : -sizeOfSymbol(type);
+    return global ? toReturn : lastFreeMemAddr;
 }
 
 void SymbolTable::toggleGlobal() {
@@ -104,7 +107,7 @@ void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vect
 
     for (size_t i = paramListHolder.size(); i--;) {
         const auto &type_indexes = paramListHolder[i];
-        for (size_t j = type_indexes.second.size(); j--;){
+        for (size_t j = type_indexes.second.size(); j--;) {
             const auto &symbolIndex = type_indexes.second[j];
             SymbolEntry &entry = operator[](symbolIndex);
             entry.isRef = true;

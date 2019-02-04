@@ -10,7 +10,7 @@ int lineno = 0;
 %option yylineno
 
 digit [0-9]
-letter [A-z]
+letter [a-zA-Z_]
 NEWLINE "\n"
 WHITE [ \t]+
 RELOPS "="|"<>"|"<"|"<="|">="|">"

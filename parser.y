@@ -78,8 +78,8 @@ declarations VAR identifier_list ':' type ';' {
 type:
 standard_type {$$ = $1;}
 | ARRAY '[' NUM RANGEOP NUM ']' OF standard_type {
-	arrayDeclarationHolder.low = atoi(symbolTable[$3].tokenVal);
-	arrayDeclarationHolder.high = atoi(symbolTable[$5].tokenVal);
+	arrayDeclarationHolder.low = atoi(symbolTable[$3].tokenVal.c_str());
+	arrayDeclarationHolder.high = atoi(symbolTable[$5].tokenVal.c_str());
 	arrayDeclarationHolder.type = $8;
 	$$ = ARRAY;
 }
@@ -167,7 +167,7 @@ variable ASSIGNOP expression {
 variable:
 ID {$$ = $1;}
 | ID '[' expression ']' {
-
+	$$ = emitter.emmitArray($1, $3);
 }
 
 procedure_statement:
