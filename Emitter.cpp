@@ -258,8 +258,8 @@ int Emitter::emmitArray(int arrayIndex, int subscriptVarIndex) {
                                                      writeSymbol(sizeOfSymbol(arrayEntry.varType), direct) +
                                                      ", " +
                                                      writeSymbol(rangeTemp, value) + "\n";
-    int arrayRef = symbolTable.insertTempVar(INTEGER, true);
-    genCode(PLUS, arrayIndex, address, rangeTemp, value, arrayRef, address);
+    int arrayRef = symbolTable.insertTempVar(INTEGER);
+    genCode(PLUS, arrayIndex, address, rangeTemp, value, arrayRef, value);
     return arrayRef;
 
 
