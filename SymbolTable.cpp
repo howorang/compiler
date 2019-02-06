@@ -34,8 +34,8 @@ void SymbolTable::initDeclarationList(std::vector<int> symbolIndexes, int type,
             entry.low = arrayDeclarationHolder.low,
             entry.high = arrayDeclarationHolder.high;
             entry.varType = arrayDeclarationHolder.type;
-            entry.place = getPlace(entry.varType);
-            lastFreeMemAddr += (entry.high - entry.low - 1) * sizeOfSymbol(entry.varType);
+            entry.place = getPlace(entry.varType); // First memory incrementation
+            lastFreeMemAddr += (entry.high - entry.low) * sizeOfSymbol(entry.varType); //Second memory incrementation Basically this is high - low + 1
         } else {
             entry.varType = type;
             entry.place = getPlace(type);
