@@ -182,26 +182,40 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     if (vm == label || symbolTable[symbolIndex].isLiteral) {
         return "#" + entry.tokenVal;
     }
-    std::string toEmit;
-    if (entry.isRef && vm == value) {
-        toEmit += "*";
-    }
-    if (entry.isLocal) {
-        toEmit += "BP";
-        toEmit += entry.place > 0 ? "+" : "";
-    }
-    if (vm == address) {
-        toEmit += "#";
-    }
 
     if (vm == direct) {
-        toEmit += "#" + std::to_string(symbolIndex);
+        return  "#" + std::to_string(symbolIndex);
     }
-    toEmit += std::to_string(entry.place);
-    return toEmit;
+
+    if (!entry.isLocal) {
+        switch (vm) {
+            case value:
+                return std::to_string(entry.place);
+            case address:
+                return "#" + std::to_string(entry.place);
+        }
+    } else {
+        std::string buffer = "BP";
+        buffer += (entry.place > 0 ? "+" : "") + std::to_string(entry.place);
+        switch (vm) {
+            case value:
+                if (entry.isRef) {
+                    return "*" + buffer;
+                } else {
+                    return buffer;
+                }
+            case address:
+                if (entry.isRef) {
+                    return buffer;
+                } else {
+                    return "#" + buffer;
+                }
+        }
+    }
 }
 
 int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
+     funcIndex = symbolTable.getFunc(funcIndex); // funcs and procs are global this can be local
     int funcResAddr = -1;
     std::vector<int> &paramListTypeSignature = symbolTable[funcIndex].paramListTypeSignature;
     for (int i = 0; i < expressionListHolder.size(); i++) {
@@ -212,7 +226,7 @@ int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
             emitter.genCode(MOV, symbolIndex, value, tempVarIndex, value);
             symbolToEmit = tempVarIndex;
         }
-        if (paramListTypeSignature[i] != symbolTable[symbolToEmit].varType) {
+        if (!symbolTable[symbolIndex].isArray && paramListTypeSignature[i] != symbolTable[symbolToEmit].varType) {
             symbolToEmit = convert(symbolToEmit, paramListTypeSignature[i]);
         }
         emitter.genCode(PUSH, symbolToEmit, address);
@@ -238,14 +252,16 @@ int Emitter::emmitArray(int arrayIndex, int subscriptVarIndex) {
     SymbolTable::SymbolEntry &subscriptEntry = symbolTable[subscriptVarIndex];
 
     int rangeTemp = symbolTable.insertTempVar(INTEGER);
-    out += "sub.i #" + std::to_string(arrayEntry.high), " #" + std::to_string(arrayEntry.low) + " " +
-                                                        std::to_string(symbolTable[rangeTemp].place) + "\n";
-    out += "mul.i " + std::to_string(symbolTable[rangeTemp].place), " #" +
-                                                                    std::to_string(sizeOfSymbol(arrayEntry.varType)) +
-                                                                    " " +
-                                                                    std::to_string(symbolTable[rangeTemp].place) + "\n";
+    out += "sub.i " + writeSymbol(subscriptVarIndex, value) + ", " + writeSymbol(arrayEntry.low, direct) + ", " +
+                                                            writeSymbol(rangeTemp, value) + "\n";
+    out += "mul.i " + writeSymbol(rangeTemp, value) + ", " +
+                                                     writeSymbol(sizeOfSymbol(arrayEntry.varType), direct) +
+                                                     ", " +
+                                                     writeSymbol(rangeTemp, value) + "\n";
     int arrayRef = symbolTable.insertTempVar(INTEGER, true);
-    genCode(PLUS, arrayEntry.place, direct, arrayRef, value);
+    genCode(PLUS, arrayIndex, address, rangeTemp, value, arrayRef, address);
+    return arrayRef;
+
 
 }
 

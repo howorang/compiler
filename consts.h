@@ -35,7 +35,10 @@ enum VARMODE {
     value,
     address,
     direct,
-    label
+    label,
+    arrlow,
+    arrhigh,
+    varsize
 };
 
 #endif //COMPILER_CONSTS_H

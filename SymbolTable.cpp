@@ -89,7 +89,7 @@ bool SymbolTable::isGlobal() {
     return global;
 }
 
-void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder) {
+void SymbolTable::initSubProgram(int index, std::vector<std::tuple<int, std::vector<int>, array_declaration_holder>> paramListHolder) {
     int incsp = SUBPROGRAM_OFFSET;
     SymbolEntry &symbolEntry = operator[](index);
     if (symbolEntry.isProcedure) {
@@ -107,15 +107,22 @@ void SymbolTable::initSubProgram(int index, std::vector<std::pair<int, std::vect
 
     for (size_t i = paramListHolder.size(); i--;) {
         const auto &type_indexes = paramListHolder[i];
-        for (size_t j = type_indexes.second.size(); j--;) {
-            const auto &symbolIndex = type_indexes.second[j];
+        for (size_t j = std::get<1>(type_indexes).size(); j--;) {
+            const auto &symbolIndex = std::get<1>(type_indexes)[j];
             SymbolEntry &entry = operator[](symbolIndex);
             entry.isRef = true;
             entry.isLocal = true;
             entry.place = incsp;
-            entry.varType = type_indexes.first;
+            entry.varType = std::get<0>(type_indexes);
             incsp += 4;
-            symbolEntry.paramListTypeSignature.push_back(type_indexes.first);
+            symbolEntry.paramListTypeSignature.push_back(std::get<0>(type_indexes));
+            if (entry.varType == ARRAY) {
+                const auto array_holder = std::get<2>(type_indexes);
+                entry.varType = array_holder.type;
+                entry.low = array_holder.low;
+                entry.high = array_holder.high;
+                entry.isArray = true;
+            }
         }
     }
     symbolEntry.incsp = incsp - SUBPROGRAM_OFFSET;
@@ -132,4 +139,14 @@ int SymbolTable::getPlace(SymbolTable::SymbolEntry entry) {
 
 int SymbolTable::getAllocatedMem() {
     return std::abs(lastFreeMemAddr);
+}
+
+int SymbolTable::getFunc(int index) {
+    symbolTable[index].tokenVal;
+    for (int i = table.size() - 1; i >= 0; i--) {
+        if (table[i].isLocal == false && table[i].tokenVal == symbolTable[index].tokenVal && table[i].isSubProgram) {
+            return i;
+        }
+    }
+    return -1;
 }

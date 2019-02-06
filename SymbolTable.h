@@ -49,9 +49,11 @@ public:
 
     bool isGlobal();
 
-    void initSubProgram(int index, std::vector<std::pair<int, std::vector<int>>> paramListHolder);
+    void initSubProgram(int index, std::vector<std::tuple<int, std::vector<int>, array_declaration_holder>> paramListHolder);
 
     int getAllocatedMem();
+
+    int getFunc(int i);
 
 private:
     std::vector<SymbolEntry> table;

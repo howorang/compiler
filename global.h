@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <tuple>
 #include "parser.hpp"
 #include "SymbolTable.h"
 #include "utils.h"

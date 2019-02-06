@@ -3,7 +3,7 @@
 #include <vector>
 
 std::vector<int> idListHolder;
-std::vector<std::pair<int, std::vector<int>>> paramListHolder;
+std::vector<std::tuple<int, std::vector<int>, array_declaration_holder>> paramListHolder;
 std::vector<int> expressionListHolder;
 array_declaration_holder arrayDeclarationHolder;
 %}
@@ -131,13 +131,13 @@ identifier_list ':' type {
 	std::vector<int> ids;
 	ids = idListHolder;
 	idListHolder.clear();
-	paramListHolder.push_back(std::make_pair($3, ids));
+	paramListHolder.push_back(std::make_tuple($3, ids, arrayDeclarationHolder));
 }
 | parameter_list ';' identifier_list ':' type {
 	std::vector<int> ids;
         ids = idListHolder;
         idListHolder.clear();
-        paramListHolder.push_back(std::make_pair($5, ids));
+        paramListHolder.push_back(std::make_tuple($5, ids, arrayDeclarationHolder));
 }
 
 compound_statement:
