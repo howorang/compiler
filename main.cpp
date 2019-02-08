@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
     ++argv, --argc;
-    yyin = fopen("gcd.pas", "r");
+    yyin = fopen("arithtest.pas", "r");
     yyparse ();
     exit (0);
 }
