@@ -35,6 +35,7 @@ public:
         int ifAfterLabel;
         int loopExitLabel;
         int loopReturnLabel;
+        bool isArrayRef = true;
     };
 
     int insert(const std::string symbol, int tokenType);
@@ -49,7 +50,7 @@ public:
 
     int insertLiteral(std::string value, int type);
 
-    int insertTempVar(int type, bool isRef = false);
+    int insertTempVar(int type, bool isRef = false, bool isArrayRef = false);
 
     int insertLabel();
 

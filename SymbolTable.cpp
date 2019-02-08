@@ -52,8 +52,8 @@ int SymbolTable::insertLiteral(std::string value, int type) {
     return static_cast<int>(table.size() - 1);
 }
 
-int SymbolTable::insertTempVar(int type, bool isRef) {
-    SymbolEntry entry = {.varType = type, .place = getPlace(type), .isLocal = !global, .isRef = isRef};
+int SymbolTable::insertTempVar(int type, bool isRef, bool isArrayRef) {
+    SymbolEntry entry = {.varType = type, .place = getPlace(type), .isLocal = !global, .isRef = isRef, .isArrayRef = isArrayRef};
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }

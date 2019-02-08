@@ -33,7 +33,13 @@ Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, VARMOD
 void Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, VARMODE vm2) {
     if (operation != INTOREAL && operation != REALTOINT) {
         arg1index = promoteIfNeeded(arg1index, arg2index);
-        arg2index = promoteIfNeeded(arg2index, arg1index);
+        if (!symbolTable[arg2index].isArrayRef){
+            arg2index = promoteIfNeeded(arg2index, arg1index);
+        } else {
+            if(symbolTable[arg1index].varType != symbolTable[arg2index].varType) {
+                arg1index = convert(arg1index, symbolTable[arg2index].varType);
+            }
+        }
     }
     std::string opCode = getOpCode(operation, determineOpType(arg1index, vm1, arg2index, vm2));
     out += opCode + " " + writeSymbol(arg1index, vm1) + ", " + writeSymbol(arg2index, vm2);
@@ -139,10 +145,12 @@ std::string Emitter::getOpCode(OP op, int type) {
             prefix = "sub";
             break;
         case REALTOINT:
-            prefix = "realtoint";
+            prefix = "realtoint.r";
+            hasPostfix = false;
             break;
         case INTOREAL:
-            prefix = "inttoreal";
+            prefix = "inttoreal.i";
+            hasPostfix = false;
             break;
         case MOV:
             prefix = "mov";
@@ -278,8 +286,8 @@ int Emitter::emmitArray(int arrayIndex, int subscriptVarIndex) {
            writeSymbol(sizeOfSymbol(arrayEntry.varType), directi) +
            ", " +
            writeSymbol(rangeTemp, value) + "\n";
-    int arrayRef = symbolTable.insertTempVar(INTEGER);
-    genCode(PLUS, arrayIndex, address, rangeTemp, value, arrayRef, value);
+    int arrayRef = symbolTable.insertTempVar(INTEGER, true, true);
+    genCode(PLUS, arrayIndex, address, rangeTemp, value, arrayRef, address);
     return arrayRef;
 
 
