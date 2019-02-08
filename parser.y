@@ -254,9 +254,12 @@ variable { // FUN CALL WITHOUT ARGS
 
 }
 | NUM {$$ = $1;}
-| '(' expression ')'
-| NOT factor
-
+| '(' expression ')' {$$ = $2;}
+| NOT factor {
+	int tempVarIndex = symbolTable.insertTempVar(symbolTable[$2].varType);
+        emitter.genCode(MINUS, 0, direct, $2, value, tempVarIndex, value);
+        $$=tempVarIndex;
+}
 %%
 int yyerror(const char *s)
 {

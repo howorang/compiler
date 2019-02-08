@@ -113,6 +113,7 @@ std::string Emitter::getOpCode(OP op, int type) {
             prefix = "mod";
             break;
         case AND:
+            prefix = "and";
             break;
         case EQ:
             prefix = "je";
@@ -123,10 +124,13 @@ std::string Emitter::getOpCode(OP op, int type) {
             prefix = "jl";
             break;
         case LTE:
+            prefix = "jle";
             break;
         case GT:
+            prefix = "jg";
             break;
         case GTE:
+            prefix = "jge";
             break;
         case PLUS:
             prefix = "add";
@@ -193,7 +197,7 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
         return "#" + entry.tokenVal;
     }
 
-    if (vm == directi || vm == directr) {
+    if (vm == directi || vm == directr || vm == direct) {
         return "#" + std::to_string(symbolIndex);
     }
 

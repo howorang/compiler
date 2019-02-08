@@ -39,6 +39,7 @@ enum VARMODE {
     address,
     directi,
     directr,
+    direct,
     label,
     arrlow,
     arrhigh,
