@@ -31,6 +31,10 @@ public:
         bool isArray;
         int low;
         int high;
+        int ifFalseLabel;
+        int ifAfterLabel;
+        int loopExitLabel;
+        int loopReturnLabel;
     };
 
     int insert(const std::string symbol, int tokenType);

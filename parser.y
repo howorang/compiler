@@ -7,8 +7,6 @@ std::vector<std::tuple<int, std::vector<int>, array_declaration_holder>> paramLi
 std::vector<int> expressionListHolder;
 array_declaration_holder arrayDeclarationHolder;
 
-int falseLabel = -1;
-int afterLabel = -1;
 %}
 
 %debug
@@ -165,17 +163,26 @@ variable ASSIGNOP expression {
 }
 | compound_statement
 | IF expression {
-	falseLabel = symbolTable.insertLabel();
-	afterLabel = symbolTable.insertLabel();
-	emitter.genCode(EQ, $2, value, 0, directi, falseLabel, label);
+	symbolTable[$1].ifFalseLabel = symbolTable.insertLabel();
+	symbolTable[$1].ifAfterLabel = symbolTable.insertLabel();
+	emitter.genCode(EQ, $2, value, 0, directi, symbolTable[$1].ifFalseLabel, label);
 } THEN statement {
-	emitter.genCode(JUMP, afterLabel, label);
+	emitter.genCode(JUMP, symbolTable[$1].ifAfterLabel, label);
 } ELSE {
-	emitter.emmitLabel(falseLabel);
+	emitter.emmitLabel(symbolTable[$1].ifFalseLabel);
 } statement {
-	emitter.emmitLabel(afterLabel);
+	emitter.emmitLabel(symbolTable[$1].ifAfterLabel);
 }
-| WHILE expression DO statement
+| WHILE {
+	symbolTable[$1].loopReturnLabel = symbolTable.insertLabel();
+	symbolTable[$1].loopExitLabel = symbolTable.insertLabel();
+	emitter.emmitLabel(symbolTable[$1].loopReturnLabel);
+} expression DO  {
+	emitter.genCode(EQ, $3, value, 0, directi, symbolTable[$1].loopExitLabel, label);
+}statement {
+	emitter.genCode(JUMP, symbolTable[$1].loopReturnLabel, label);
+	emitter.emmitLabel(symbolTable[$1].loopExitLabel);
+}
 
 variable:
 ID {$$ = $1;}
