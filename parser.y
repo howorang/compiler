@@ -227,7 +227,11 @@ term {$$ = $1;}
 	emitter.genCode((OP)$2, $1, value, $3, value, tempVarIndex, value);
 	$$=tempVarIndex;
 }
-| simple_expression OR term
+| simple_expression OR term {
+	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, value, $3, value));
+        emitter.genCode(OR_OP, $1, value, $3, value, tempVarIndex, value);
+        $$=tempVarIndex;
+}
 
 term:
 factor {$$ = $1;}

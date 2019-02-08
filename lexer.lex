@@ -40,7 +40,7 @@ OR "or"
                     lineno++;
                 }
 {WHITE}         {}
-"or"            {return OR;}
+"or"            {yylval == OR_OP; return OR;}
 "not"           {return NOT;}
 "do"            {return DO;}
 "if"            {return IF;}

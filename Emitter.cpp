@@ -178,6 +178,9 @@ std::string Emitter::getOpCode(OP op, int type) {
             prefix = "jump.i";
             hasPostfix = false;
             break;
+        case OR_OP:
+            prefix = "or";
+            break;
         default:
             throw "Unknown operation";
     }

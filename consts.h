@@ -31,7 +31,8 @@ enum OP {
     CALL,
     ENTER,
     INCSP,
-    JUMP
+    JUMP,
+    OR_OP
 };
 
 enum VARMODE {
