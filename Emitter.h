@@ -22,7 +22,7 @@ public:
     void genCode(OP operation, int arg1, VARMODE vm1, int arg2, VARMODE vm2); // arg1 and arg2 should be symbolTable indexes
     void genCode(OP operation, int arg1, VARMODE vm1);
     void genCode(OP operation);
-    int determineOpType(int arg1, int arg2);
+    int determineOpType(int arg1, VARMODE vm1, int arg2, VARMODE vm2);
     std::string writeSymbol(int symbolIndex, VARMODE varmode);
     int emmitFunc(int funcIndex, std::vector<int> expressionListHolder);
     void exitSubProgramDecl();

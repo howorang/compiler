@@ -24,7 +24,7 @@ Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, VARMOD
         arg2index = promoteIfNeeded(arg2index, arg1index);
     }
     SymbolTable::SymbolEntry &result = symbolTable[resAddrIndex];
-    std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
+    std::string opCode = getOpCode(operation, determineOpType(arg1index, vm1, arg2index, vm2));
     out += opCode + " " + writeSymbol(arg1index, vm1) + ", " + writeSymbol(arg2index, vm2) + ", " +
            writeSymbol(resAddrIndex, vm3);
     out += "\n";
@@ -35,7 +35,7 @@ void Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, V
         arg1index = promoteIfNeeded(arg1index, arg2index);
         arg2index = promoteIfNeeded(arg2index, arg1index);
     }
-    std::string opCode = getOpCode(operation, determineOpType(arg1index, arg2index));
+    std::string opCode = getOpCode(operation, determineOpType(arg1index, vm1, arg2index, vm2));
     out += opCode + " " + writeSymbol(arg1index, vm1) + ", " + writeSymbol(arg2index, vm2);
     out += "\n";
 }
@@ -88,10 +88,10 @@ int Emitter::convert(int arg1index, int toType) {
     return arg1index;
 }
 
-int Emitter::determineOpType(int arg1index, int arg2index) {
+int Emitter::determineOpType(int arg1index, VARMODE vm1, int arg2index, VARMODE vm2) {
     SymbolTable::SymbolEntry &arg1 = symbolTable[arg1index];
     SymbolTable::SymbolEntry &arg2 = symbolTable[arg2index];
-    if (arg1.varType == INTEGER && arg2.varType == INTEGER) {
+    if ((arg1.varType == INTEGER || vm1 == directi) && (arg2.varType == INTEGER || vm2 == directi)) {
         return INTEGER;
     } else {
         return REAL;
@@ -185,12 +185,16 @@ std::string Emitter::getOpCode(OP op, int type) {
 
 std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
-    if (vm == label || symbolTable[symbolIndex].isLiteral) {
+    if (vm == label) {
         return "#" + entry.label;
     }
 
-    if (vm == direct) {
-        return  "#" + std::to_string(symbolIndex);
+    if(entry.isLiteral) {
+        return "#" + entry.tokenVal;
+    }
+
+    if (vm == directi || vm == directr) {
+        return "#" + std::to_string(symbolIndex);
     }
 
     if (!entry.isLocal) {
@@ -221,7 +225,7 @@ std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
 }
 
 int Emitter::emmitFunc(int funcIndex, std::vector<int> expressionListHolder) {
-     funcIndex = symbolTable.getFunc(funcIndex); // funcs and procs are global this can be local
+    funcIndex = symbolTable.getFunc(funcIndex); // funcs and procs are global this can be local
     int funcResAddr = -1;
     std::vector<int> &paramListTypeSignature = symbolTable[funcIndex].paramListTypeSignature;
     for (int i = 0; i < expressionListHolder.size(); i++) {
@@ -258,12 +262,12 @@ int Emitter::emmitArray(int arrayIndex, int subscriptVarIndex) {
     SymbolTable::SymbolEntry &subscriptEntry = symbolTable[subscriptVarIndex];
 
     int rangeTemp = symbolTable.insertTempVar(INTEGER);
-    out += "sub.i " + writeSymbol(subscriptVarIndex, value) + ", " + writeSymbol(arrayEntry.low, direct) + ", " +
-                                                            writeSymbol(rangeTemp, value) + "\n";
+    out += "sub.i " + writeSymbol(subscriptVarIndex, value) + ", " + writeSymbol(arrayEntry.low, directi) + ", " +
+           writeSymbol(rangeTemp, value) + "\n";
     out += "mul.i " + writeSymbol(rangeTemp, value) + ", " +
-                                                     writeSymbol(sizeOfSymbol(arrayEntry.varType), direct) +
-                                                     ", " +
-                                                     writeSymbol(rangeTemp, value) + "\n";
+           writeSymbol(sizeOfSymbol(arrayEntry.varType), directi) +
+           ", " +
+           writeSymbol(rangeTemp, value) + "\n";
     int arrayRef = symbolTable.insertTempVar(INTEGER);
     genCode(PLUS, arrayIndex, address, rangeTemp, value, arrayRef, value);
     return arrayRef;

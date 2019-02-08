@@ -37,7 +37,8 @@ enum OP {
 enum VARMODE {
     value,
     address,
-    direct,
+    directi,
+    directr,
     label,
     arrlow,
     arrhigh,

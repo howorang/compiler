@@ -167,7 +167,7 @@ variable ASSIGNOP expression {
 | IF expression {
 	falseLabel = symbolTable.insertLabel();
 	afterLabel = symbolTable.insertLabel();
-	emitter.genCode(EQ, $2, value, 0, direct, falseLabel, label);
+	emitter.genCode(EQ, $2, value, 0, directi, falseLabel, label);
 } THEN statement {
 	emitter.genCode(JUMP, afterLabel, label);
 } ELSE {
@@ -211,10 +211,10 @@ simple_expression {$$ = $1;}
 	int _afterLabel = symbolTable.insertLabel();
 	int expValue = symbolTable.insertTempVar(INTEGER);
 	emitter.genCode((OP)$2, $1, value, $3, value, trueLabel, label);
-	emitter.genCode(MOV, 0, direct, expValue, value);
+	emitter.genCode(MOV, 0, directi, expValue, value);
 	emitter.genCode(JUMP, _afterLabel, label);
 	emitter.emmitLabel(trueLabel);
-	emitter.genCode(MOV, 1, direct, expValue, value);
+	emitter.genCode(MOV, 1, directi, expValue, value);
 	emitter.emmitLabel(_afterLabel);
 	$$ = expValue;
 }
@@ -223,7 +223,7 @@ simple_expression:
 term {$$ = $1;}
 | SIGN term
 | simple_expression SIGN term {
-	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, $3));
+	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, value, $3, value));
 	emitter.genCode((OP)$2, $1, value, $3, value, tempVarIndex, value);
 	$$=tempVarIndex;
 }
@@ -232,7 +232,7 @@ term {$$ = $1;}
 term:
 factor {$$ = $1;}
 | term MULOP factor {
-	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, $3));
+	int tempVarIndex = symbolTable.insertTempVar(emitter.determineOpType($1, value, $3, value));
 	emitter.genCode((OP)$2, $1, value, $3, value, tempVarIndex, value);
 	$$=tempVarIndex;
 }
