@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
     ++argv, --argc;
-    yyin = fopen("t14.pas", "r");
+    yyin = fopen("bubblesort.pas", "r");
     yyparse ();
     exit (0);
 }

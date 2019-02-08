@@ -181,6 +181,9 @@ std::string Emitter::getOpCode(OP op, int type) {
         case OR_OP:
             prefix = "or";
             break;
+        case READ:
+            prefix = "read";
+            break;
         default:
             throw "Unknown operation";
     }

@@ -39,6 +39,8 @@ public:
 
     int insert(const std::string symbol, int tokenType);
 
+    int insertHolder(int holderType);
+
     int lookup(const std::string symbol);
 
     SymbolEntry &operator[](int i);

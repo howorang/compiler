@@ -43,10 +43,16 @@ OR "or"
 "or"            {yylval == OR_OP; return OR;}
 "not"           {return NOT;}
 "do"            {return DO;}
-"if"            {return IF;}
+"if"            {
+                    yylval = symbolTable.insertHolder(IF_HOLDER);
+                    return IF;
+}
 "else"          {return ELSE;}
 "then"          {return THEN;}
-"while"         {return WHILE;}
+"while"         {
+                     yylval = symbolTable.insertHolder(WHILE_HOLDER);
+                    return WHILE;
+}
 "var"           {return VAR;}
 ".."            {return RANGEOP;}
 "array"         {return ARRAY;}

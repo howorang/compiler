@@ -7,6 +7,8 @@
 #define SUBPROGRAM_OFFSET 8
 
 #define LABEL 463643
+#define WHILE_HOLDER 463644
+#define IF_HOLDER 463645
 
 enum OP {
     MUL,
@@ -32,7 +34,8 @@ enum OP {
     ENTER,
     INCSP,
     JUMP,
-    OR_OP
+    OR_OP,
+    READ
 };
 
 enum VARMODE {

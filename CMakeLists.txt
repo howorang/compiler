@@ -30,4 +30,4 @@ IF(FLEX_FOUND)
     )
 ENDIF()
 
-add_executable(compiler main.cpp SymbolTable.cpp SymbolTable.h global.h ${BisonOutput} ${FlexOutput} utils.h utils.cpp Emitter.h Emitter.cpp)
+add_executable(compiler main.cpp SymbolTable.cpp SymbolTable.h global.h lexer.cpp parser.cpp parser.hpp utils.h utils.cpp Emitter.h Emitter.cpp)

@@ -156,3 +156,9 @@ int SymbolTable::insertLabel() {
     table.push_back(entry);
     return static_cast<int>(table.size() - 1);
 }
+
+int SymbolTable::insertHolder(int holderType) {
+    SymbolEntry entry = {.tokenType = holderType, .isLocal = !global};
+    table.push_back(entry);
+    return static_cast<int>(table.size() - 1);
+}
