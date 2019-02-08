@@ -27,6 +27,7 @@ public:
     int emmitFunc(int funcIndex, std::vector<int> expressionListHolder);
     void exitSubProgramDecl();
     int emmitArray(int arrayIndex, int subscriptVarIndex);
+    void emmitLabel(int index);
 
 private:
     std::string out;

@@ -45,6 +45,8 @@ public:
 
     int insertTempVar(int type, bool isRef = false);
 
+    int insertLabel();
+
     void toggleGlobal();
 
     bool isGlobal();
@@ -61,6 +63,7 @@ private:
     int lastFreeMemAddr = 0;
     int oldLastFreeMemAddr;
     bool global = true;
+    int nextLabel = 1;
 
     int getPlace(int type);
 

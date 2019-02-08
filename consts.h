@@ -6,6 +6,8 @@
 #define COMPILER_CONSTS_H
 #define SUBPROGRAM_OFFSET 8
 
+#define LABEL 463643
+
 enum OP {
     MUL,
     DIV,
@@ -28,7 +30,8 @@ enum OP {
     PUSH,
     CALL,
     ENTER,
-    INCSP
+    INCSP,
+    JUMP
 };
 
 enum VARMODE {

@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
     ++argv, --argc;
-    yyin = fopen("t9.pas", "r");
+    yyin = fopen("t10.pas", "r");
     yyparse ();
     exit (0);
 }

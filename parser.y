@@ -6,6 +6,9 @@ std::vector<int> idListHolder;
 std::vector<std::tuple<int, std::vector<int>, array_declaration_holder>> paramListHolder;
 std::vector<int> expressionListHolder;
 array_declaration_holder arrayDeclarationHolder;
+
+int falseLabel = -1;
+int afterLabel = -1;
 %}
 
 %debug
@@ -161,7 +164,17 @@ variable ASSIGNOP expression {
 
 }
 | compound_statement
-| IF expression THEN statement ELSE statement
+| IF expression {
+	falseLabel = symbolTable.insertLabel();
+	afterLabel = symbolTable.insertLabel();
+	emitter.genCode(EQ, $2, value, 0, direct, falseLabel, label);
+} THEN statement {
+	emitter.genCode(JUMP, afterLabel, label);
+} ELSE {
+	emitter.emmitLabel(falseLabel);
+} statement {
+	emitter.emmitLabel(afterLabel);
+}
 | WHILE expression DO statement
 
 variable:
@@ -193,7 +206,18 @@ expression {
 
 expression:
 simple_expression {$$ = $1;}
-| simple_expression RELOP simple_expression
+| simple_expression RELOP simple_expression {
+	int trueLabel = symbolTable.insertLabel();
+	int _afterLabel = symbolTable.insertLabel();
+	int expValue = symbolTable.insertTempVar(INTEGER);
+	emitter.genCode((OP)$2, $1, value, $3, value, trueLabel, label);
+	emitter.genCode(MOV, 0, direct, expValue, value);
+	emitter.genCode(JUMP, _afterLabel, label);
+	emitter.emmitLabel(trueLabel);
+	emitter.genCode(MOV, 1, direct, expValue, value);
+	emitter.emmitLabel(_afterLabel);
+	$$ = expValue;
+}
 
 simple_expression:
 term {$$ = $1;}

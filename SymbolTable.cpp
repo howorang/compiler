@@ -150,3 +150,9 @@ int SymbolTable::getFunc(int index) {
     }
     return -1;
 }
+
+int SymbolTable::insertLabel() {
+    SymbolEntry entry = {.tokenType = LABEL, .label = "lab" + std::to_string(nextLabel++), .isLocal = !global};
+    table.push_back(entry);
+    return static_cast<int>(table.size() - 1);
+}

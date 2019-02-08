@@ -115,10 +115,12 @@ std::string Emitter::getOpCode(OP op, int type) {
         case AND:
             break;
         case EQ:
+            prefix = "je";
             break;
         case NEQ:
             break;
         case LT:
+            prefix = "jl";
             break;
         case LTE:
             break;
@@ -168,6 +170,10 @@ std::string Emitter::getOpCode(OP op, int type) {
             prefix = "incsp.i";
             hasPostfix = false;
             break;
+        case JUMP:
+            prefix = "jump.i";
+            hasPostfix = false;
+            break;
         default:
             throw "Unknown operation";
     }
@@ -180,7 +186,7 @@ std::string Emitter::getOpCode(OP op, int type) {
 std::string Emitter::writeSymbol(int symbolIndex, VARMODE vm) {
     SymbolTable::SymbolEntry &entry = symbolTable[symbolIndex];
     if (vm == label || symbolTable[symbolIndex].isLiteral) {
-        return "#" + entry.tokenVal;
+        return "#" + entry.label;
     }
 
     if (vm == direct) {
@@ -263,5 +269,9 @@ int Emitter::emmitArray(int arrayIndex, int subscriptVarIndex) {
     return arrayRef;
 
 
+}
+
+void Emitter::emmitLabel(int index) {
+    simpleEmit(symbolTable[index].label + ":");
 }
 
