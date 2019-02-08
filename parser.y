@@ -163,7 +163,8 @@ variable ASSIGNOP expression {
 }
 | compound_statement
 | IF expression {
-	symbolTable[$1].ifFalseLabel = symbolTable.insertLabel();
+	int falseLabel = symbolTable.insertLabel();
+	symbolTable[$1].ifFalseLabel = falseLabel;
 	symbolTable[$1].ifAfterLabel = symbolTable.insertLabel();
 	emitter.genCode(EQ, $2, value, 0, directi, symbolTable[$1].ifFalseLabel, label);
 } THEN statement {
