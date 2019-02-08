@@ -198,7 +198,9 @@ ID {
 	if(symbolTable[$1].tokenVal == "write") {
 		emitter.genCode(WRITE, expressionListHolder[0], value);
 	}else if(symbolTable[$1].tokenVal == "read") {
-         	emitter.genCode(READ, expressionListHolder[0], value);
+		for(int expr : expressionListHolder) {
+			emitter.genCode(READ, expr, value);
+		}
          } else {
 		emitter.emmitFunc($1, expressionListHolder);
         }

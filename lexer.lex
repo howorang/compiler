@@ -78,7 +78,7 @@ OR "or"
                     yylval = p;
                     return ID;
                 }
-{digit}+.{digit}+ {
+{digit}+"."{digit}+ {
                     yylval = symbolTable.insertLiteral(yytext, REAL);
                     return NUM;
 }
