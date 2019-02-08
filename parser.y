@@ -267,9 +267,16 @@ variable { // FUN CALL WITHOUT ARGS
 | NUM {$$ = $1;}
 | '(' expression ')' {$$ = $2;}
 | NOT factor {
-	int tempVarIndex = symbolTable.insertTempVar(symbolTable[$2].varType);
-        emitter.genCode(MINUS, 0, direct, $2, value, tempVarIndex, value);
-        $$=tempVarIndex;
+	int trueLabel = symbolTable.insertLabel();
+        int _afterLabel = symbolTable.insertLabel();
+        int expValue = symbolTable.insertTempVar(INTEGER);
+        emitter.genCode(EQ, $2, value, 0, direct, trueLabel, label);
+        emitter.genCode(MOV, 0, directi, expValue, value);
+        emitter.genCode(JUMP, _afterLabel, label);
+        emitter.emmitLabel(trueLabel);
+        emitter.genCode(MOV, 1, directi, expValue, value);
+        emitter.emmitLabel(_afterLabel);
+        $$ = expValue;
 }
 %%
 int yyerror(const char *s)
