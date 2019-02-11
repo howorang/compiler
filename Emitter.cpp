@@ -48,7 +48,9 @@ void Emitter::genCode(OP operation, int arg1index, VARMODE vm1, int arg2index, V
 
 void Emitter::genCode(OP operation, int arg1index, VARMODE vm1) {
     if (operation == INCSP) {
-        out += "incsp.i #" + std::to_string(symbolTable[arg1index].incsp) + "\n";
+        if(symbolTable[arg1index].incsp != 0) {
+            out += "incsp.i #" + std::to_string(symbolTable[arg1index].incsp) + "\n";
+        }
         return;
     } else {
         std::string opCode = getOpCode(operation, symbolTable[arg1index].varType);
